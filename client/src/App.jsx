@@ -11,6 +11,7 @@ import LogoutPage from './pages/logoutPage';
 import { TaskProvider } from './context/taskContext';
 import NavbarOne from './components/NavbarOne';
 
+
 function App() {
   return (
     <AuthProvider>
