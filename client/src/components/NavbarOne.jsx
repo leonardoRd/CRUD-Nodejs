@@ -20,6 +20,12 @@ function NavbarOne() {
                         <li className="rounded-md bg-zinc-600 px-2 py-2 hover:bg-zinc-500">                            
                             <Link to='/add-task'>Add Tasks</Link>
                         </li>
+                        <li className="rounded-md bg-zinc-600 px-2 py-2 hover:bg-zinc-500">                            
+                            <Link to='/invoices'>Invoices</Link>
+                        </li>
+                        <li className="rounded-md bg-zinc-600 px-2 py-2 hover:bg-zinc-500">                            
+                            <Link to='/add-invoice'>Add Invoice</Link>
+                        </li>
                         <li className="rounded-md bg-zinc-600 px-2 py-2 hover:bg-zinc-500">
                             <Link to='/logout'>Logout</Link>
                         </li>
