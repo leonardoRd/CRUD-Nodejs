@@ -12,7 +12,10 @@ function InvoiceTable( {invoice} ) {
             <td>{new Date(invoice.fechaEmision).toLocaleDateString()}</td>
             <td>${invoice.importe}</td>
             <td>{invoice.tasaDeCambio}</td>            
-            <td>            
+            <td>
+                <Link to={`/invoice/${invoice._id}`} className="bg-blue-600 rounded-md px-3 py-2 mx-2 hover:bg-blue-500">
+                    Editar    
+                </Link>                 
                 <button className="bg-red-600 rounded-md px-3 py-2 mx-2 hover:bg-red-500" onClick={() => {
                     deleteInvoice(invoice._id);
                 }}>Eliminar</button>
