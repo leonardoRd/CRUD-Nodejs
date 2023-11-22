@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useInvoice } from "../context/invoiceContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import moment from "moment";
 
 function InvoiceFormPage() {
     const {register, handleSubmit, setValue, formState: {errors} } = useForm();
@@ -14,9 +15,13 @@ function InvoiceFormPage() {
             if(params.id) {                          
                 try {
                     const res = await getInvoice(params.id);                
-                    console.log(res)
-                    //setValue('title', res.title);
-                    //setValue('descripcion', res.descripcion);    
+                    const fechaFormateada = moment(res.fechaEmision).format('YYYY-MM-DD');          
+                    setValue('tipoComprobante', res.tipoComprobante);
+                    setValue('descripcion', res.descripcion);    
+                    setValue('estado', res.estado);   
+                    setValue('fechaEmision', fechaFormateada);   
+                    setValue('importe', res.importe);   
+                    setValue('tasaDeCambio', res.tasaDeCambio);   
                 } catch (error) {
                     console.error(error);
                 }                      
@@ -28,15 +33,14 @@ function InvoiceFormPage() {
     const onSubmit = handleSubmit ( async (data) => {
         if(params.id){
             uploadInvoice(params.id, data);
-        }else{            
-            console.log("acaaaaa", data)
+        }else{                        
             createInvoice(data)
         }        
         navigate("/invoices")
     });
 
     return (
-        <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
+        <div className='flex h-[calc(100vh-50px)] items-center justify-center'>
             <div className='bg-zinc-800 max-w-md p-10 rounded-md text-center'>
 
                 <h3 className="text-white text-2xl text-center mb-3 font-bold">Create Invoice</h3>

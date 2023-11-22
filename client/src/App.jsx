@@ -33,8 +33,10 @@ function App() {
               <Route path='/add-Task' element={< TaskFormPage />} />          
               <Route path='/tasks/:id' element={< TaskFormPage />} />
               <Route path='/profile' element={< ProfilePage />} />
+
               <Route path='/invoices' element={< InvoicesPage/>}/>
               <Route path='/add-invoice' element={< InvoicesFormPage/>}/>
+              <Route path='/invoice/:id' element={< InvoicesFormPage/>}/>
             </Route>        
 
           </Routes>

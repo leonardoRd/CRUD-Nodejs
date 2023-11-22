@@ -1,15 +1,15 @@
 import Invoice from "../models/invoice.model.js";
 
 export const getInvoices = async (req, res) => {        
-    const invoices = await Invoice.find();
-    /* const invoices = await Invoice.find({
+    //const invoices = await Invoice.find();
+    const invoices = await Invoice.find({
         persona: req.user.id
-    }).populate('user'); // Trae todos los task del user logueado */
+    }).populate('persona'); // Trae todos los task del user logueado
     res.json(invoices);
 }
 
 export const getInvoice = async (req, res) => {
-    const invoice = await Invoice.findById(req.params.id)
+    const invoice = await Invoice.findById(req.params.id).populate('persona');
     //.populate('user'); // populate para traer los datos del usuario tmb
     if(!invoice) return res.status(404).json({ message: "Invoice not found"});
 
@@ -26,7 +26,7 @@ export const createInvoice = async (req, res) => {
         fechaEmision,
         importe,
         tasaDeCambio,
-        //persona: req.user.id
+        persona: req.user.id
     });
 
     const invoiceSaved = await newInvoice.save();
