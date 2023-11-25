@@ -24,7 +24,7 @@ function InvoicesPage() {
                     <th className="text-white px-4 border-x-2 border-cyan-400">Fecha Emisión</th>
                     <th className="text-white px-4 border-x-2 border-cyan-400">Importe</th>
                     <th className="text-white px-4 border-x-2 border-cyan-400">Tasa de cambio</th>
-                    {/* <th className="text-white px-4 border-x-2 border-cyan-400">Persona</th> */}
+                    <th className="text-white px-4 border-x-2 border-cyan-400">Cliente</th>
                     <th className="text-white px-4 border-x-2 border-cyan-400">Acciones</th>
                 </tr>
             </thead>

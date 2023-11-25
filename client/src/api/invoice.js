@@ -11,3 +11,7 @@ export const createInvoiceRequest = invoice => axios.post(`/invoice`, invoice);
 export const updateInvoiceRequest = (id, invoice) => axios.put(`/invoice/${id}`, invoice);
 
 export const deleteInvoiceRequest = (id) => axios.delete(`/invoice/${id}`)
+
+export const getUsersRequest = () => axios.get(`/users`);
+
+export const getUserRequest = id => axios.get(`/user/${id}`);
