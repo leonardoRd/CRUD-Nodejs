@@ -10,15 +10,19 @@ import ProtectedRoute from './ProtectedRoute';
 import LogoutPage from './pages/logoutPage';
 import { TaskProvider } from './context/taskContext';
 import {InvoiceProvider} from './context/invoiceContext'
+import {TipoComprobanteProvider} from './context/tipoComprobContext'
 import NavbarOne from './components/NavbarOne';
 import InvoicesPage from './pages/InvoicesPage';
 import InvoicesFormPage from './pages/InvoiceFormPage'
+import TipoComprobPage from './pages/TipoComprobPage'
+import TipoComprobFormPage from './pages/TipoComprobFormPage'
 
 function App() {
   return (
     <AuthProvider>
       <TaskProvider>
         <InvoiceProvider>
+          <TipoComprobanteProvider>
         <BrowserRouter>         
           <main className='container mx-auto px-10'>
           <NavbarOne />
@@ -37,11 +41,16 @@ function App() {
               <Route path='/invoices' element={< InvoicesPage/>}/>
               <Route path='/add-invoice' element={< InvoicesFormPage/>}/>
               <Route path='/invoice/:id' element={< InvoicesFormPage/>}/>
+
+              <Route path='/tiposComprob' element={< TipoComprobPage/>}/>
+              <Route path='/add-TipoComprob' element={< TipoComprobFormPage/>}/>
+              <Route path='/tipoComprob/:id' element={< TipoComprobFormPage/>}/>
             </Route>        
 
           </Routes>
           </main>
         </BrowserRouter>
+        </TipoComprobanteProvider>
         </InvoiceProvider>
       </TaskProvider>
       

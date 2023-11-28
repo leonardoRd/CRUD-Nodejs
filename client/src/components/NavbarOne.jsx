@@ -31,10 +31,18 @@ function NavbarOne() {
                             </div>
                             {showOptions && (
                                 <ul className="absolute left-0 mt-2 space-y-2 ">                                
+                                    <li className="block px-4 rounded-md bg-zinc-600 py-2 w-40 hover:bg-zinc-500">                            
+                                        <Link to='/add-invoice'>Add Invoice</Link>
+                                    </li>
+                                    <li className="block px-4 rounded-md bg-zinc-600 py-2 w-40 hover:bg-zinc-500"                                     
+                                     
+                                     >                            
+                                        <Link to='/tiposComprob'>TipoComprobante</Link>
+                                    </li>
                                     <li className="block px-4 rounded-md bg-zinc-600 py-2 w-40 hover:bg-zinc-500"                                     
                                      onMouseLeave={handleToggleOptions}
                                      >                            
-                                        <Link to='/add-invoice'>Add Invoice</Link>
+                                        <Link to='/add-tipoComprob'>Agregar TipoComprobante</Link>
                                     </li>                                                                        
                                 </ul>
                             )}                            
