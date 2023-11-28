@@ -1,5 +1,5 @@
 import {createContext, useContext, useState} from 'react'
-import { createInvoiceRequest, getInvoicesRequest, deleteInvoiceRequest, getInvoiceRequest, updateInvoiceRequest } from "../api/invoice";
+import { createInvoiceRequest, getInvoicesRequest, deleteInvoiceRequest, getInvoiceRequest, updateInvoiceRequest, getUsersRequest } from "../api/invoice";
 
 export const InvoiceContext = createContext();
 
@@ -10,12 +10,24 @@ export const useInvoice = () => {
         throw new Error("Use Auth Provider")
     } 
     return context;
-};
+}
 
 export const InvoiceProvider = ({children}) => {
 
-    const [invoice, setInvoice] = useState([]);
+    const [invoice, setInvoice] = useState([]);   
+    const [user, setUser] = useState([]);
+
     // Aca van todas las funciones
+    const getUsers = async () => {
+        try {
+            const res = await getUsersRequest();
+            console.log(res.data);
+            setUser(res.data);
+        } catch (error) {
+            console.error(error)
+        }
+    };
+
     const getInvoices = async () => {
         try {
             const res = await getInvoicesRequest();
@@ -71,6 +83,9 @@ export const InvoiceProvider = ({children}) => {
             deleteInvoice,
             getInvoices,
             uploadInvoice,
+            user,
+            getUsers,
+            setUser
             }} >
             {children}
         </InvoiceContext.Provider>

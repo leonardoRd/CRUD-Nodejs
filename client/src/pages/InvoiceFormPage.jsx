@@ -1,14 +1,15 @@
 import { useForm } from "react-hook-form";
 import { useInvoice } from "../context/invoiceContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import moment from "moment";
 
 function InvoiceFormPage() {
     const {register, handleSubmit, setValue, formState: {errors} } = useForm();
-    const {createInvoice, invoice, getInvoice, uploadInvoice} = useInvoice()
+    const {createInvoice, invoice, getInvoice, uploadInvoice, user, getUsers} = useInvoice()
     const navigate = useNavigate();
     const params = useParams();
+    const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
         async function loadInvoice() {
@@ -21,7 +22,8 @@ function InvoiceFormPage() {
                     setValue('estado', res.estado);   
                     setValue('fechaEmision', fechaFormateada);   
                     setValue('importe', res.importe);   
-                    setValue('tasaDeCambio', res.tasaDeCambio);   
+                    setValue('tasaDeCambio', res.tasaDeCambio);
+                    setValue('cliente', res.cliente._id);   
                 } catch (error) {
                     console.error(error);
                 }                      
@@ -29,6 +31,13 @@ function InvoiceFormPage() {
         }
         loadInvoice();
     },[]);
+
+    useEffect(() => {
+        async function loadUsers() {
+            getUsers();
+        }
+        loadUsers();
+    }, []);
 
     const onSubmit = handleSubmit ( async (data) => {
         if(params.id){
@@ -38,6 +47,10 @@ function InvoiceFormPage() {
         }        
         navigate("/invoices")
     });
+
+    const handleSelectChange = (event) => {
+        setSelectedUser(event.target.value);
+    };
 
     return (
         <div className='flex h-[calc(100vh-50px)] items-center justify-center'>
@@ -93,6 +106,21 @@ function InvoiceFormPage() {
                         errors.tasaDeCambio && <p className=' w-full text-red-500'> tasa de cambio is required</p>
                     }
                     
+                    <select value={selectedUser} onChange={handleSelectChange} 
+                        {...register("cliente", {required: true })}
+                        className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4'>
+                        <option value="">Selecciona una cliente</option>
+                        {user.map(user => (
+                            <option key={user._id} value={user._id}>
+                                {user.username}
+                            </option>
+                        ))}
+                    </select>
+                    
+                    {
+                        errors.cliente && <p className=' w-full text-red-500'> Cliente is required</p>
+                    }
+
                     <button className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-zinc-500'>
                         Save
                     </button>
