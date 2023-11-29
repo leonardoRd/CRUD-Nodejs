@@ -13,8 +13,10 @@ function InvoicesPage() {
     if(!invoice.length === 0) return (<h1>No hay Facturas</h1>)
 
     return (
-        <div className="">
-            <h1 className="text-bold text-2xl text-white pb-5">Invoices List</h1>
+        <div>
+            <h1 className=" text-center font-bold text-2xl text-white pb-5">Facturas</h1>
+        <div className="flex items-center justify-center">
+            
             <table border="1" className="justify-center text-center max-w-full">
             <thead>
                 <tr>
@@ -36,7 +38,8 @@ function InvoicesPage() {
                 }
             </tbody>
         </table>
-    </div>        
+    </div>   
+    </div>     
     )
 };
 
