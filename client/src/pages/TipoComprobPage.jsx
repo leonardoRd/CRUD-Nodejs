@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useTipoComprob } from '../context/tipoComprobContext'
-//import TaskCard from "../components/TaskCard";
 import TipoComprobTable from '../components/TipoComprobTable'
 
 function TipoComprobPage() {

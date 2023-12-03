@@ -19,7 +19,6 @@ export const getEstado = async (req, res) => {
 
 export const createEstado = async (req, res) => {
     const {estadoID, descripcion} = req.body;
-
     const newEstado = new Estado({
         estadoID,
         descripcion
