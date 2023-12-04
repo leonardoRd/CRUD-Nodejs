@@ -34,11 +34,10 @@ export const InvoiceProvider = ({ children }) => {
     }
   }
 
-  const getInvoices = async () => {
+  const getInvoices = async (tipoComprobante) => {
     try {
-      const res = await getInvoicesRequest()
+      const res = await getInvoicesRequest(tipoComprobante)
       setInvoice(res.data)
-      console.log(res)
     } catch (error) {
       console.error(error)
     }
