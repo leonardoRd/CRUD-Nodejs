@@ -24,6 +24,7 @@ export const EstadosProvider = ({ children }) => {
   const getEstado = async (id) => {
     try {
       const res = await getEstadoRequest(id)
+      return res.data
     } catch (error) {
       console.error(error)
     }

@@ -1,21 +1,43 @@
 import { useForm } from 'react-hook-form'
 import { useEstados } from '../context/estadosContext'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { useEffect } from 'react'
 
 function EstadosFormPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm()
   const navigate = useNavigate()
+  const params = useParams()
 
-  const { createEstado } = useEstados()
+  const { createEstado, uploadEstado, getEstado } = useEstados()
 
   const onSubmit = handleSubmit(async (data) => {
-    createEstado(data)
+    if (params.id) {
+      uploadEstado(params.id, data)
+    } else {
+      createEstado(data)
+    }
     navigate('/estados')
   })
+
+  useEffect(() => {
+    async function loadEstado() {
+      if (params.id) {
+        try {
+          const res = await getEstado(params.id)
+          setValue("estadoID", res.estadoID)
+          setValue("descripcion", res.descripcion)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+    loadEstado();
+  }, [])
 
   return (
     <div className="flex h-[calc(100vh-50px)] items-center justify-center">
