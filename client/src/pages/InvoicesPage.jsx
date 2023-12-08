@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form'
 function InvoicesPage() {
   const { getInvoices, invoice, setInvoice } = useInvoice()
   const { getTiposComprob, tipoComprob } = useTipoComprob()
-  const { register, handleSubmit } = useForm()
 
   useEffect(() => {
     getInvoices()
@@ -57,8 +56,8 @@ function InvoicesPage() {
       <h1 className=" text-center font-bold text-2xl text-white pb-5">
         Facturas
       </h1>
-      <div className="flex items-center justify-center">
-        <table border="1" className="justify-center text-center max-w-full">
+      <div className="flex items-center justify-center overflow-x-auto">
+        <table border="1" className="min-w-full table-auto justify-center text-center max-w-full">
           <thead>
             <tr>
               <th className="text-white px-4 border-x-2 border-cyan-400">

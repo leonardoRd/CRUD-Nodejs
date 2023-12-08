@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useInvoice } from '../context/invoiceContext'
 import { useTipoComprob } from '../context/tipoComprobContext'
+import { useEstados } from "../context/estadosContext";
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
@@ -16,6 +17,7 @@ function InvoiceFormPage() {
     useInvoice()
 
   const { getTiposComprob, tipoComprob } = useTipoComprob()
+  const {getEstados, estados} = useEstados()
 
   const navigate = useNavigate()
   const params = useParams()
@@ -56,11 +58,13 @@ function InvoiceFormPage() {
       } catch (error) {
         console.log(error)
       }
-    }
+    };
     loadTiposComprobantes()
+    getEstados()
   }, [])
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data)
     if (params.id) {
       uploadInvoice(params.id, data)
     } else {
@@ -112,13 +116,18 @@ function InvoiceFormPage() {
             <p className=" w-full text-red-500"> descripción is required</p>
           )}
 
-          <input
-            type="text"
-            placeholder="Estado"
+          <select
             name="estado"
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4"
             {...register('estado', { required: true })}
-          />
+            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4"
+          >
+            <option value="">Selecciona un Estado</option>
+            {estados.map((estado) => (
+              <option key={estado._id} value={estado._id}>
+                {estado.descripcion}
+              </option>
+            ))}
+          </select>
 
           {errors.estado && (
             <p className=" w-full text-red-500"> Estado is required</p>

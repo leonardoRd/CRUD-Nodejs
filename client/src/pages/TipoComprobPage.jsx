@@ -15,8 +15,8 @@ function TipoComprobPage() {
       <h1 className="font-bold text-2xl text-white pb-5 text-center">
         Tipos de Comprobantes
       </h1>
-      <div className="flex items-center justify-center">
-        <table border="1" className="justify-center text-center max-w-full">
+      <div className="overflow-x-auto flex items-center justify-center">
+        <table border="1" className="min-w-full table-auto justify-center text-center max-w-full">
           <thead>
             <tr>
               <th className="text-white px-4 border-x-2 border-cyan-400">

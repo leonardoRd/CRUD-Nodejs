@@ -1,5 +1,6 @@
 import Invoice from "../models/invoice.model.js";
 import User from "../models/user.model.js";
+import Estado from "../models/estado.model.js";
 
 export const getInvoices = async (req, res) => {
   try {
@@ -11,8 +12,12 @@ export const getInvoices = async (req, res) => {
       // Si se proporciona el tipo de comprobante, agregarlo a la consulta
       query.tipoComprobante = tipoComprobante;
     }
-    
+
     const invoices = await Invoice.find(query)
+      .populate({
+        path: "estado",
+        model: "Estado",
+      })
       .populate({
         path: "persona",
         model: "User",
@@ -22,11 +27,12 @@ export const getInvoices = async (req, res) => {
         path: "cliente",
         model: "User",
         match: { _id: { $exists: true } },
-      }); // Trae todos los task del user logueado
+      });
+
     console.log(invoices);
     res.json(invoices);
   } catch (error) {
-    console.error("Error:", error.name);
+    console.log(error)
     res
       .status(500)
       .json({ error: "Error al obtener facturas con populate cliente" });
@@ -37,7 +43,6 @@ export const getInvoice = async (req, res) => {
   const invoice = await Invoice.findById(req.params.id)
     .populate("persona")
     .populate("cliente");
-  //.populate('user'); // populate para traer los datos del usuario tmb
   if (!invoice) return res.status(404).json({ message: "Invoice not found" });
 
   res.json(invoice);

@@ -46,7 +46,6 @@ export const InvoiceProvider = ({ children }) => {
   const createInvoice = async (invoice) => {
     try {
       const res = await createInvoiceRequest(invoice)
-      //console.log(res.data);
     } catch (error) {
       console.log(error)
     }
