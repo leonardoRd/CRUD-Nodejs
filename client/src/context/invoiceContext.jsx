@@ -27,16 +27,15 @@ export const InvoiceProvider = ({ children }) => {
   const getUsers = async () => {
     try {
       const res = await getUsersRequest()
-      console.log(res.data)
       setUser(res.data)
     } catch (error) {
       console.error(error)
     }
   }
 
-  const getInvoices = async (tipoComprobante) => {
+  const getInvoices = async (tipoComprobante, cliente) => {
     try {
-      const res = await getInvoicesRequest(tipoComprobante)
+      const res = await getInvoicesRequest(tipoComprobante, cliente)
       setInvoice(res.data)
     } catch (error) {
       console.error(error)

@@ -19,6 +19,8 @@ import TipoComprobPage from './pages/TipoComprobPage'
 import TipoComprobFormPage from './pages/TipoComprobFormPage'
 import EstadosPage from './pages/EstadosPage'
 import EstadosFormPage from './pages/EstadosFormPage'
+import ProductosPage from './pages/ProductosPage'
+import ProductosFormPage from './pages/ProductosFormPage'
 
 function App() {
   return (
@@ -37,6 +39,17 @@ function App() {
                     <Route path="/logout" element={<LogoutPage />} />
 
                     <Route element={<ProtectedRoute />}>
+                      {/* Productos */}
+                      <Route path="/productos" element={<ProductosPage />} />
+                      <Route
+                        path="/add-productos"
+                        element={<ProductosFormPage />}
+                      />
+                      <Route
+                        path="/productos/:id"
+                        element={<ProductosFormPage />}
+                      />
+
                       {/* Tareas */}
                       <Route path="/tasks" element={<TaskPage />} />
                       <Route path="/add-Task" element={<TaskFormPage />} />

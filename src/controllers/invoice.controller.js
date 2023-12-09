@@ -1,10 +1,9 @@
 import Invoice from "../models/invoice.model.js";
 import User from "../models/user.model.js";
-import Estado from "../models/estado.model.js";
 
 export const getInvoices = async (req, res) => {
   try {
-    const { tipoComprobante } = req.query;
+    const { tipoComprobante, cliente } = req.query;
 
     let query = { persona: req.user.id };
 
@@ -12,6 +11,8 @@ export const getInvoices = async (req, res) => {
       // Si se proporciona el tipo de comprobante, agregarlo a la consulta
       query.tipoComprobante = tipoComprobante;
     }
+  
+    if (cliente) query.cliente = cliente;
 
     const invoices = await Invoice.find(query)
       .populate({
@@ -29,10 +30,9 @@ export const getInvoices = async (req, res) => {
         match: { _id: { $exists: true } },
       });
 
-    console.log(invoices);
     res.json(invoices);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res
       .status(500)
       .json({ error: "Error al obtener facturas con populate cliente" });
@@ -89,7 +89,6 @@ export const uploadInvoice = async (req, res) => {
     });
 
     if (!invoice) return res.status(404).json({ message: "invoice not found" });
-    console.log(invoice);
     res.json(invoice);
   } catch (error) {
     return res.status(400).json(["Not found"]);

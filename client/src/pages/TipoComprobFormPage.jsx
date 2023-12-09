@@ -47,12 +47,16 @@ function TipoComprobFormPage() {
   })
 
   return (
-    <div className="flex h-[calc(100vh-50px)] items-center justify-center">
-      <div className="bg-zinc-800 max-w-md p-10 rounded-md text-center">
-        <h3 className="text-white text-2xl text-center mb-3 font-bold">
-          Create Tipo Comprobante
+    <div className="flex h-[calc(70vh-50px)] items-center justify-center">
+      <div className="bg-zinc-800 max-w-md px-10 py-8 rounded-md text-center">
+        <h3 className="text-white text-2xl text-center mb-5 font-bold">
+          Agregar Tipo Comprobante
         </h3>
         <form onSubmit={onSubmit}>
+          <label className="text-white  flex font-bold text-md text-left">
+            {' '}
+            Tipo de Comprobante ID:{' '}
+          </label>
           <input
             type="text"
             placeholder="Tipo de Comprobante ID"
@@ -68,6 +72,10 @@ function TipoComprobFormPage() {
             </p>
           )}
 
+          <label className="text-white  flex font-bold text-md text-left">
+            {' '}
+            Descripción:{' '}
+          </label>
           <textarea
             name="descripcion"
             rows="3"
