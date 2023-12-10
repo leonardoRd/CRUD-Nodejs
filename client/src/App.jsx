@@ -12,6 +12,7 @@ import { TaskProvider } from './context/taskContext'
 import { InvoiceProvider } from './context/invoiceContext'
 import { TipoComprobanteProvider } from './context/tipoComprobContext'
 import { EstadosProvider } from './context/estadosContext'
+import { ProductoProvider, ProductosContext } from './context/productosContext'
 import NavbarOne from './components/NavbarOne'
 import InvoicesPage from './pages/InvoicesPage'
 import InvoicesFormPage from './pages/InvoiceFormPage'
@@ -29,26 +30,15 @@ function App() {
         <InvoiceProvider>
           <TipoComprobanteProvider>
             <EstadosProvider>
-              <BrowserRouter>
-                <main className="container mx-auto px-10">
-                  <NavbarOne />
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/logout" element={<LogoutPage />} />
-
-                    <Route element={<ProtectedRoute />}>
-                      {/* Productos */}
-                      <Route path="/productos" element={<ProductosPage />} />
-                      <Route
-                        path="/add-productos"
-                        element={<ProductosFormPage />}
-                      />
-                      <Route
-                        path="/productos/:id"
-                        element={<ProductosFormPage />}
-                      />
+              <ProductoProvider>
+                <BrowserRouter>
+                  <main className="container mx-auto px-10">
+                    <NavbarOne />
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/logout" element={<LogoutPage />} />
 
                       {/* Tareas */}
                       <Route path="/tasks" element={<TaskPage />} />
@@ -85,10 +75,23 @@ function App() {
                       <Route path="/estados" element={<EstadosPage />} />
                       <Route path="/add-estado" element={<EstadosFormPage />} />
                       <Route path="/estado/:id" element={<EstadosFormPage />} />
-                    </Route>
-                  </Routes>
-                </main>
-              </BrowserRouter>
+
+                      <Route element={<ProtectedRoute />}>
+                        {/* Productos */}
+                        <Route path="/productos" element={<ProductosPage />} />
+                        <Route
+                          path="/add-productos"
+                          element={<ProductosFormPage />}
+                        />
+                        <Route
+                          path="/productos/:id"
+                          element={<ProductosFormPage />}
+                        />
+                      </Route>
+                    </Routes>
+                  </main>
+                </BrowserRouter>
+              </ProductoProvider>
             </EstadosProvider>
           </TipoComprobanteProvider>
         </InvoiceProvider>

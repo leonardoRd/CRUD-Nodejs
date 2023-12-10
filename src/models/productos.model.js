@@ -20,7 +20,7 @@ const productosSchema = new mongoose.Schema(
     usuario: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      
     },
   },
   {

@@ -2,7 +2,7 @@ import Producto from "../models/productos.model.js";
 
 export const getProductos = async (req, res) => {
   try {
-    const productos = await Producto.find({ usuario: req.user.id });
+    const productos = await Producto.find();
     res.json(productos);
   } catch (error) {
     res.status(500).json({ mensaje: "Productos no encontrados" });
@@ -19,18 +19,18 @@ export const getProducto = async (req, res) => {
 };
 
 export const createProducto = async (req, res) => {
-  const { descripcio, unidadMedida, deposito, tipo, usuario } = req.body;
+  const { descripcion, unidadMedida, deposito, tipo, usuario } = req.body;
 
   try {
-    const newProducto = new Producto(
-      descripcio,
+    const newProducto = new Producto({
+      descripcion,
       unidadMedida,
       deposito,
       tipo,
-      usuario
-    );
+    });
 
     const productoGuardado = await newProducto.save();
+
     res.json(productoGuardado);
   } catch (error) {
     res.status(500).json({ Mensaje: "No se pudo crear el producto" });

@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useProducto } from '../context/productosContext'
 
 function ProductosFormPage() {
   const {
@@ -9,19 +10,19 @@ function ProductosFormPage() {
     setValue,
     formState: { errors },
   } = useForm()
+
   const navigate = useNavigate()
   const params = useParams()
 
-  const onSubmit = handleSubmit( async (data) => {
-    try {
-        if(params.id){
-            await uploadProducto()
-        }else{
-            await createProducto()
-        }
-    } catch (error) {
-        console.error(error)
+  const { createProducto, uploadProducto } = useProducto()
+
+  const onSubmit = handleSubmit(async (data) => {
+    if (params.id) {
+      uploadProducto(params.id, data)
+    } else {
+      createProducto(data)
     }
+
     navigate('/productos')
   })
 
