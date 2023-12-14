@@ -48,13 +48,21 @@ export const deleteProducto = async (req, res) => {
 
 export const uploadProducto = async (req, res) => {
   try {
+    const { descripcion, unidadMedida, deposito, tipo } = req.body;
+
     const productoActualizado = await Producto.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      {
+        descripcion,
+        unidadMedida,
+        deposito,
+        tipo,
+      },
       { new: true }
     );
     res.json(productoActualizado);
   } catch (error) {
+    console.log("PRODUCTOOO", error);
     res.status(500).json({ Mensaje: "No se pudo actualizar el producto" });
   }
 };

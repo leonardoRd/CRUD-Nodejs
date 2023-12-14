@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useTipoComprob } from '../context/tipoComprobContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { BotonGuardar } from "../components/BotonGuardar";
 
 function TipoComprobFormPage() {
   const {
@@ -87,9 +88,11 @@ function TipoComprobFormPage() {
           {errors.descripcion && (
             <p className=" w-full text-red-500"> descripción is required</p>
           )}
-          <button className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-zinc-500">
-            Save
-          </button>
+
+          <BotonGuardar/>
+          {/* <button className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500">
+            Guardar
+          </button> */}
         </form>
       </div>
     </div>

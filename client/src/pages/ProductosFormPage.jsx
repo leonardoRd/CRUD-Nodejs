@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useProducto } from '../context/productosContext'
+import { BotonGuardar } from '../components/BotonGuardar'
 
 function ProductosFormPage() {
   const {
@@ -14,7 +15,23 @@ function ProductosFormPage() {
   const navigate = useNavigate()
   const params = useParams()
 
-  const { createProducto, uploadProducto } = useProducto()
+  const { createProducto, uploadProducto, getProducto } = useProducto()
+
+  useEffect(() => {
+    async function loadProducto() {
+      if (params.id) {
+        const res = await getProducto(params.id)
+        // setear todos los valores
+        setValue('descripcion', res.descripcion)
+        setValue('unidadMedida', res.unidadMedida)
+        setValue('deposito', res.deposito)
+        setValue('tipo', res.tipo)
+        setValue('usuario', res.usuario)
+      }
+    }
+
+    loadProducto()
+  }, [])
 
   const onSubmit = handleSubmit(async (data) => {
     if (params.id) {
@@ -22,7 +39,6 @@ function ProductosFormPage() {
     } else {
       createProducto(data)
     }
-
     navigate('/productos')
   })
 
@@ -119,10 +135,10 @@ function ProductosFormPage() {
               )}
             </div>
           </div>
-
-          <button className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-zinc-500">
-            Save
-          </button>
+          <BotonGuardar />
+          {/* <button className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500">
+            Guardar
+          </button> */}
         </form>
       </div>
     </div>

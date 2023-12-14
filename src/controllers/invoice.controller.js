@@ -11,7 +11,7 @@ export const getInvoices = async (req, res) => {
       // Si se proporciona el tipo de comprobante, agregarlo a la consulta
       query.tipoComprobante = tipoComprobante;
     }
-  
+
     if (cliente) query.cliente = cliente;
 
     const invoices = await Invoice.find(query)
