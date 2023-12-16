@@ -22,6 +22,8 @@ import EstadosPage from './pages/EstadosPage'
 import EstadosFormPage from './pages/EstadosFormPage'
 import ProductosPage from './pages/ProductosPage'
 import ProductosFormPage from './pages/ProductosFormPage'
+import DatoCodigoPage from './pages/datoCodigo/DatoCodigoPage'
+import DatoCodigoFormPage from './pages/datoCodigo/DatoCodigoFormPage'
 
 function App() {
   return (
@@ -39,44 +41,49 @@ function App() {
                       <Route path="/login" element={<LoginPage />} />
                       <Route path="/register" element={<RegisterPage />} />
                       <Route path="/logout" element={<LogoutPage />} />
-
-                      {/* Tareas */}
-                      <Route path="/tasks" element={<TaskPage />} />
-                      <Route path="/add-Task" element={<TaskFormPage />} />
-                      <Route path="/tasks/:id" element={<TaskFormPage />} />
-                      <Route path="/profile" element={<ProfilePage />} />
-
-                      {/* Facturas */}
-                      <Route path="/invoices" element={<InvoicesPage />} />
-                      <Route
-                        path="/add-invoice"
-                        element={<InvoicesFormPage />}
-                      />
-                      <Route
-                        path="/invoice/:id"
-                        element={<InvoicesFormPage />}
-                      />
-
-                      {/* Tipos de Comprobantes */}
-                      <Route
-                        path="/tiposComprob"
-                        element={<TipoComprobPage />}
-                      />
-                      <Route
-                        path="/add-TipoComprob"
-                        element={<TipoComprobFormPage />}
-                      />
-                      <Route
-                        path="/tipoComprob/:id"
-                        element={<TipoComprobFormPage />}
-                      />
-
-                      {/* Estados */}
-                      <Route path="/estados" element={<EstadosPage />} />
-                      <Route path="/add-estado" element={<EstadosFormPage />} />
-                      <Route path="/estado/:id" element={<EstadosFormPage />} />
-
                       <Route element={<ProtectedRoute />}>
+                        {/* Tareas */}
+                        <Route path="/tasks" element={<TaskPage />} />
+                        <Route path="/add-Task" element={<TaskFormPage />} />
+                        <Route path="/tasks/:id" element={<TaskFormPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
+
+                        {/* Facturas */}
+                        <Route path="/invoices" element={<InvoicesPage />} />
+                        <Route
+                          path="/add-invoice"
+                          element={<InvoicesFormPage />}
+                        />
+                        <Route
+                          path="/invoice/:id"
+                          element={<InvoicesFormPage />}
+                        />
+
+                        {/* Tipos de Comprobantes */}
+                        <Route
+                          path="/tiposComprob"
+                          element={<TipoComprobPage />}
+                        />
+                        <Route
+                          path="/add-TipoComprob"
+                          element={<TipoComprobFormPage />}
+                        />
+                        <Route
+                          path="/tipoComprob/:id"
+                          element={<TipoComprobFormPage />}
+                        />
+
+                        {/* Estados */}
+                        <Route path="/estados" element={<EstadosPage />} />
+                        <Route
+                          path="/add-estado"
+                          element={<EstadosFormPage />}
+                        />
+                        <Route
+                          path="/estado/:id"
+                          element={<EstadosFormPage />}
+                        />
+
                         {/* Productos */}
                         <Route path="/productos" element={<ProductosPage />} />
                         <Route
@@ -86,6 +93,20 @@ function App() {
                         <Route
                           path="/productos/:id"
                           element={<ProductosFormPage />}
+                        />
+
+                        {/* Dato Codigos */}
+                        <Route
+                          path="/datoCodigo"
+                          element={<DatoCodigoPage />}
+                        />
+                        <Route
+                          path="/add-datoCodigo"
+                          element={<DatoCodigoFormPage />}
+                        />
+                        <Route
+                          path="/datoCodigo/:id"
+                          element={<DatoCodigoFormPage />}
                         />
                       </Route>
                     </Routes>

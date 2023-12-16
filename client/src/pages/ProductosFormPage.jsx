@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useProducto } from '../context/productosContext'
-import { BotonGuardar } from '../components/BotonGuardar'
+import BotonGuardar from '../components/BotonGuardar'
 
 function ProductosFormPage() {
   const {

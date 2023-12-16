@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useTask } from '../context/taskContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
-import { BotonGuardar } from "../components/BotonGuardar";
+import  BotonGuardar from '../components/BotonGuardar'
 
 function TaskFormPage() {
   const {

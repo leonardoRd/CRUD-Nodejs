@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useEstados } from '../context/estadosContext'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
-import { BotonGuardar } from '../components/BotonGuardar'
+import BotonGuardar from '../components/BotonGuardar'
 
 function EstadosFormPage() {
   const {

@@ -5,7 +5,7 @@ import { useEstados } from '../context/estadosContext'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
-import { BotonGuardar } from '../components/BotonGuardar'
+import BotonGuardar from '../components/BotonGuardar'
 
 function InvoiceFormPage() {
   const {
