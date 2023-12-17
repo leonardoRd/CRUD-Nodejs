@@ -34,6 +34,10 @@ const invoiceSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    condicionPago: {
+      type: String,
+      required: true
+    }
   },
   {
     timestamps: true,

@@ -14,6 +14,7 @@ function InvoiceTable({ invoice }) {
       <td>${invoice.importe}</td>
       <td>{invoice.tasaDeCambio}</td>
       <td>{invoice.cliente.username}</td>
+      <td>{invoice.condicionPago}</td>
       <td className=''>
         <Link
           to={`/invoice/${invoice._id}`}

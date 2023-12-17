@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react'
-import { createDatoCodigoRequest } from '../../api/datoCodigo'
+import {
+  createDatoCodigoRequest,
+  uploadDatoCodigoRequest,
+  getDatoCodigoRequest,
+} from '../../api/datoCodigo'
 import { useForm } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
 import BotonGuardar from '../../components/BotonGuardar'
 
 function DatoCodigoFormPage() {
-  const { register, handleSubmit, formState: errors } = useForm()
+  const { register, handleSubmit, setValue, formState: errors } = useForm()
   const [filas, setFilas] = useState([])
+
+  const navigate = useNavigate()
+  const params = useParams()
 
   const agregarFila = () => {
     setFilas([
@@ -16,6 +24,7 @@ function DatoCodigoFormPage() {
         valorTexto: '',
         valorNumerico: '',
         valorBoolean: '',
+        nuevo: '',
       },
     ])
   }
@@ -57,18 +66,63 @@ function DatoCodigoFormPage() {
     console.log('Valores de las filas:', filas)
   }
 
-  const onSubmit = handleSubmit(async (data) => {
-    
-    filas.forEach( async fila => {
+  useEffect(() => {
+    async function loadDatoCodigo() {
       try {
-        const {datoComun} = data
-        const {datoCodigo, valorTexto, valorNumerico} = fila
-        const res = await createDatoCodigoRequest({datoComun, datoCodigo, valorTexto, valorNumerico})
+        const res = await getDatoCodigoRequest(params.id)
+        setValue('datoComun', params.id)
+        const datos = res.data
+        datos.forEach((element) => {
+          // Utilizar el método de array `map` para obtener un nuevo array de filas
+          const nuevasFilas = datos.map((element, index) => ({
+            id: index + 1, // Otra opción sería usar un ID único si lo tienes disponible
+            datoCodigo: element.datoCodigo,
+            valorTexto: element.valorTexto,
+            valorNumerico: element.valorNumerico,
+            valorBoolean: element.valorBoolean,
+            nuevo: 'N',
+          }))
+
+          // Actualizar el estado con el nuevo array de filas
+          setFilas(nuevasFilas)
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    if (params.id) loadDatoCodigo()
+  }, [])
+
+  // Carga de los datos
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(filas)
+    filas.forEach(async (fila) => {
+      try {
+        const { datoComun } = data
+        const { datoCodigo, valorTexto, valorNumerico, valorBoolean } = fila
+
+        if (fila.nuevo === 'N') {
+          const res = await uploadDatoCodigoRequest(datoComun, datoCodigo, {
+            datoComun,
+            datoCodigo,
+            valorTexto,
+            valorNumerico,
+            valorBoolean,
+          })
+        } else {
+          const res = await createDatoCodigoRequest({
+            datoComun,
+            datoCodigo,
+            valorTexto,
+            valorNumerico,
+            valorBoolean,
+          })
+        }
       } catch (error) {
         console.log(error)
       }
-    });
-    
+    })
+    navigate('/datoCodigo')
   })
 
   return (
@@ -78,6 +132,12 @@ function DatoCodigoFormPage() {
         <h3 className="text-white text-2xl text-center mb-3 font-bold">
           Agregar Dato Código
         </h3>
+        <button
+          onClick={agregarFila}
+          className="bg-lime-700 rounded-md p-2 hover:bg-lime-500"
+        >
+          Agregar Fila
+        </button>
 
         {/* Formulario */}
         <form onSubmit={onSubmit}>
@@ -100,12 +160,6 @@ function DatoCodigoFormPage() {
           </div>
 
           <div>
-            <button
-              onClick={agregarFila}
-              className="bg-lime-700 rounded-md p-2 hover:bg-lime-500"
-            >
-              Agregar Fila
-            </button>
             <table className="min-w-full justify-center text-center max-w-full">
               <thead>
                 <tr>
@@ -125,7 +179,8 @@ function DatoCodigoFormPage() {
                     <td>
                       <input
                         type="text"
-                        value={fila.valor}
+                        value={fila.datoCodigo}
+                        name={`datoCodigo-${fila.id}`}
                         onChange={(e) =>
                           handleChange(fila.id, e.target.value, 1)
                         }
@@ -135,7 +190,8 @@ function DatoCodigoFormPage() {
                     <td>
                       <input
                         type="text"
-                        value={fila.valor}
+                        value={fila.valorTexto}
+                        name={`valorTexto-${fila.id}`}
                         onChange={(e) =>
                           handleChange(fila.id, e.target.value, 2)
                         }
@@ -145,28 +201,32 @@ function DatoCodigoFormPage() {
                     <td>
                       <input
                         type="number"
-                        value={fila.valor}
+                        value={fila.valorNumerico}
+                        name={`valorNumerico-${fila.id}`}
                         onChange={(e) =>
                           handleChange(fila.id, e.target.value, 3)
                         }
                         className="w-auto bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                       />
                     </td>
-                    {/* <td>
+                    <td>
                       <input
                         type="checkbox"
-                       
+                        checked={fila.valorBoolean}
+                        name={`valorBoolean-${fila.id}`}
                         onChange={(e) =>
-                          handleChange(fila.id, e.target.value, 4)
+                          handleChange(fila.id, e.target.checked, 4)
                         }
                         className="w-auto bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                       />
-                    </td> */}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <button onClick={obtenerValores}>Obtener Valores</button>
+            <button onClick={obtenerValores} hidden>
+              Obtener Valores
+            </button>
           </div>
 
           <BotonGuardar />

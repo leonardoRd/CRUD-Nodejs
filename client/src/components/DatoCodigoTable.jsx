@@ -1,15 +1,7 @@
 import { Link } from 'react-router-dom'
 import { deleteDatoCodigoRequest } from '../api/datoCodigo'
 
-function DatoCodigoTable({ datoCodigo }) {
-  async function deleteDatoCodigo(dato1, dato2) {
-    try {
-      const res = await deleteDatoCodigoRequest(dato1, dato2)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
+function DatoCodigoTable({ datoCodigo, onDelete }) {
   return (
     <tr className="overflow-x-auto text-center hover:bg-zinc-500 cursor-pointer">
       <td>{datoCodigo.datoComun}</td>
@@ -20,6 +12,7 @@ function DatoCodigoTable({ datoCodigo }) {
         <input
           type="checkbox"
           checked={datoCodigo.valorBoolean}
+          readOnly
           className={`form-checkbox h-5 w-5 text-${
             datoCodigo.valorBoolean ? 'green' : 'red'
           }-500`}
@@ -27,7 +20,7 @@ function DatoCodigoTable({ datoCodigo }) {
       </td>
       <td>
         <Link
-          to={`/datoCodigo/${datoCodigo._id}`}
+          to={`/datoCodigo/${datoCodigo.datoComun}`}
           className="bg-blue-600 rounded-md px-3 py-2 mx-2 hover:bg-blue-500 sm:inline-block"
         >
           Editar
@@ -35,7 +28,7 @@ function DatoCodigoTable({ datoCodigo }) {
         <button
           className="bg-red-600 rounded-md px-3 py-2 mx-2 hover:bg-red-500 sm:inline-block"
           onClick={() => {
-            deleteDatoCodigo(datoCodigo.datoComun, datoCodigo.datoCodigo)
+            onDelete(datoCodigo.datoComun, datoCodigo.datoCodigo)
           }}
         >
           Eliminar

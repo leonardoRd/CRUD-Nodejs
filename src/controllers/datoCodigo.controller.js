@@ -2,8 +2,13 @@ import DatoCodigo from "../models/datoCodigo.model.js";
 
 // Obtener todos los datos codigos
 export const getDatoCodigos = async (req, res) => {
+  const { datoComun, datoCodigo } = req.query;
+  let query = {};
+  if (datoComun) query.datoComun = datoComun;
+  if (datoCodigo) query.datoCodigo = datoCodigo;
+
   try {
-    const datoCodigos = await DatoCodigo.find();
+    const datoCodigos = await DatoCodigo.find(query);
     res.json(datoCodigos);
   } catch (error) {
     res.status(500).json({ mensaje: "No se encontraron datos codigos" });
@@ -12,11 +17,11 @@ export const getDatoCodigos = async (req, res) => {
 
 // Obtiene los datos codigos por condicion
 export const getDatoCodigo = async (req, res) => {
-  const { datoComun, datoCodigo } = req.query;
+  const { datoComun } = req.query;
+
   try {
     const datoCodigoFind = await DatoCodigo.find({
       datoComun: datoComun,
-      datoCodigo: datoCodigo,
     });
 
     res.json(datoCodigoFind);
@@ -29,14 +34,17 @@ export const getDatoCodigo = async (req, res) => {
 export const createDatoCodigo = async (req, res) => {
   const { datoComun, datoCodigo, valorTexto, valorNumerico, valorBoolean } =
     req.body;
-  console.log(req.body);
+
+  let bool = false;
+  if (valorBoolean) bool = true;
+
   try {
     const newDatoCodigo = new DatoCodigo({
       datoComun,
       datoCodigo,
       valorTexto,
       valorNumerico,
-      valorBoolean,
+      valorBoolean: bool,
     });
 
     const datoCodigoSaved = await newDatoCodigo.save();
@@ -63,6 +71,8 @@ export const deleteDatoCodigo = async (req, res) => {
 // Actualiza los datos codigos por condicion
 export const uploadDatoCodigo = async (req, res) => {
   const { datoComun, datoCodigo } = req.query;
+  console.log("BODY", req.body);
+
   try {
     const datoCodigoActualizado = await DatoCodigo.updateMany(
       { datoComun: datoComun, datoCodigo: datoCodigo },

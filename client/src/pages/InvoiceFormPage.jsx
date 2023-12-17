@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import BotonGuardar from '../components/BotonGuardar'
+import { getDatoCodigoRequest } from '../api/datoCodigo'
 
 function InvoiceFormPage() {
   const {
@@ -19,6 +20,8 @@ function InvoiceFormPage() {
 
   const { getTiposComprob, tipoComprob } = useTipoComprob()
   const { getEstados, estados } = useEstados()
+  const [condicionPago, setCondicionPago] = useState([])
+  const [contado, setContado] = useState(false)
 
   const navigate = useNavigate()
   const params = useParams()
@@ -37,6 +40,7 @@ function InvoiceFormPage() {
           setValue('importe', res.importe)
           setValue('tasaDeCambio', res.tasaDeCambio)
           setValue('cliente', res.cliente._id)
+          setValue('condicionPago', res.condicionPago)
         } catch (error) {
           console.error(error)
         }
@@ -45,11 +49,20 @@ function InvoiceFormPage() {
     loadInvoice()
   }, [])
 
+  async function loadCondicionPago(valor) {
+    try {
+      const res = await getDatoCodigoRequest(valor)
+      setCondicionPago(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     async function loadUsers() {
       getUsers()
     }
     loadUsers()
+    loadCondicionPago('CONPAGO')
   }, [])
 
   useEffect(() => {
@@ -75,6 +88,11 @@ function InvoiceFormPage() {
 
   const handleSelectChange = (event) => {
     setSelectedUser(event.target.value)
+  }
+  const handleSelectChangeCondicion = (event) => {
+    if (event === 'CON') {
+      setContado(true)
+    } else setContado(false)
   }
 
   return (
@@ -215,6 +233,40 @@ function InvoiceFormPage() {
 
               {errors.cliente && (
                 <p className=" w-auto text-red-500"> Cliente is required</p>
+              )}
+            </div>
+
+            <div className="mr-3">
+              <label className="text-white  flex font-bold text-md text-left">
+                Condición de Pago:
+              </label>
+              <select
+                onClick={(e) => {
+                  const valorSelect = e.target.value
+                  console.log(valorSelect)
+                  handleSelectChangeCondicion(valorSelect)
+                }}
+                {...register('condicionPago', { required: true })}
+                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+              >
+                <option value="">Selecciona Condición de Pago</option>
+                {condicionPago.map((condicion) => (
+                  <option key={condicion._id} value={condicion.datoCodigo}>
+                    {condicion.valorTexto}
+                  </option>
+                ))}
+              </select>
+              {errors.condicionPago && (
+                <p className="w-auto text-red-500">
+                  Condicion de Pago es Requerida
+                </p>
+              )}
+              {contado && (
+                <input
+                  name="instrumento"
+                  className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                  placeholder="Instrumento de Pago"
+                />
               )}
             </div>
           </div>

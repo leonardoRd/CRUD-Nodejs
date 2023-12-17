@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useProducto } from '../context/productosContext'
 import BotonGuardar from '../components/BotonGuardar'
+import { getDatoCodigoRequest } from '../api/datoCodigo'
 
 function ProductosFormPage() {
   const {
@@ -16,21 +17,42 @@ function ProductosFormPage() {
   const params = useParams()
 
   const { createProducto, uploadProducto, getProducto } = useProducto()
+  const [unidadMedida, setUnidadMedida] = useState([])
+  const [deposito, setDeposito] = useState([])
+  const [tipos, setTipos] = useState([])
+
+  async function loadProducto() {
+    if (params.id) {
+      const res = await getProducto(params.id)
+      // setear todos los valores
+      setValue('descripcion', res.descripcion)
+      setValue('unidadMedida', res.unidadMedida)
+      setValue('deposito', res.deposito)
+      setValue('tipo', res.tipo)
+      setValue('usuario', res.usuario)
+    }
+  }
+
+  async function loadUnidadMedida(datoComunFind) {
+    try {
+      const res = await getDatoCodigoRequest(datoComunFind)
+      if (datoComunFind === 'UNIMED') {
+        setUnidadMedida(res.data)
+      } else {
+        if (datoComunFind === 'DEPOSITO') {
+          setDeposito(res.data)
+        } else setTipos(res.data)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
-    async function loadProducto() {
-      if (params.id) {
-        const res = await getProducto(params.id)
-        // setear todos los valores
-        setValue('descripcion', res.descripcion)
-        setValue('unidadMedida', res.unidadMedida)
-        setValue('deposito', res.deposito)
-        setValue('tipo', res.tipo)
-        setValue('usuario', res.usuario)
-      }
-    }
-
     loadProducto()
+    loadUnidadMedida('UNIMED')
+    loadUnidadMedida('DEPOSITO')
+    loadUnidadMedida('TIPOITEM')
   }, [])
 
   const onSubmit = handleSubmit(async (data) => {
@@ -73,13 +95,20 @@ function ProductosFormPage() {
               <label className="text-white flex font-bold text-md text-left">
                 Unidad de Medida:
               </label>
-              <input
-                type="text"
-                placeholder="Ingrese Unidad de Medida"
+
+              <select
                 name="unidadMedida"
-                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('unidadMedida', { required: true })}
-              />
+                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+              >
+                <option value="">Selecciona una Unidad de Medida</option>
+                {unidadMedida.map((unidad) => (
+                  <option key={unidad._id} value={unidad.datoCodigo}>
+                    {unidad.valorTexto}
+                  </option>
+                ))}
+              </select>
+
               {errors.unidadMedida && (
                 <p className=" w-full text-red-500">
                   Unidad de Medida es requerida
@@ -91,13 +120,19 @@ function ProductosFormPage() {
               <label className="text-white flex font-bold text-md text-left">
                 Depósito:
               </label>
-              <input
-                type="text"
-                placeholder="Ingrese la Depósito"
+
+              <select
                 name="deposito"
-                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('deposito', { required: true })}
-              />
+                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+              >
+                <option value="">Selecciona un depósito</option>
+                {deposito.map((dep) => (
+                  <option key={dep._id} value={dep.datoCodigo}>
+                    {dep.valorTexto}
+                  </option>
+                ))}
+              </select>
               {errors.deposito && (
                 <p className=" w-full text-red-500">Depósito es requerida</p>
               )}
@@ -107,13 +142,27 @@ function ProductosFormPage() {
               <label className="text-white flex font-bold text-md text-left">
                 Tipo del producto:
               </label>
-              <input
+
+              <select
+                name="tipo"
+                {...register('tipo', { required: true })}
+                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+              >
+                <option value="">Selecciona un Tipo</option>
+                {tipos.map((tipo) => (
+                  <option key={tipo._id} value={tipo.datoCodigo}>
+                    {tipo.valorTexto}
+                  </option>
+                ))}
+              </select>
+
+              {/*  <input
                 type="text"
                 placeholder="Ingrese el Tipo"
                 name="tipo"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('tipo', { required: true })}
-              />
+              /> */}
               {errors.tipo && (
                 <p className=" w-full text-red-500">Tipo es requerida</p>
               )}

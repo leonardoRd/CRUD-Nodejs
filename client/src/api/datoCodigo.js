@@ -3,14 +3,18 @@ import axios from './axios'
 const API = 'http://localhost:4000/api'
 
 // Obtener todos los datos codigos
-export const getDatoCodigosRequest = async () => await axios.get(`/datoCodigos`)
+export const getDatoCodigosRequest = async (datoComun,datoCodigo) =>
+  await axios.get(
+    `/datoCodigos${datoComun ? `?datoComun=${datoComun}` : ''}${
+      datoCodigo ? `${datoComun ? '&' : '?'}datoCodigo=${datoCodigo}` : ''
+    }`
+  )
 
 // Obtener los datos codigos por condicion
-export const getDatoCodigoRequest = async (datoComun, datoCodigo) =>
+export const getDatoCodigoRequest = async (datoComun) =>
   await axios.get('/datoCodigo', {
     params: {
       datoComun: datoComun,
-      datoCodigo: datoCodigo,
     },
   })
 
@@ -25,11 +29,14 @@ export const uploadDatoCodigoRequest = async (
   datoComun,
   datoCodigo,
   nuevosValores
-) =>
-  await axios.put('/datoCodigo', null, {
+) => {
+  await axios.put('/datoCodigo', JSON.stringify(nuevosValores), {
     params: { datoComun: datoComun, datoCodigo: datoCodigo },
-    data: nuevosValores,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   })
+}
 
 // Borra los datos condigo por condicion
 export const deleteDatoCodigoRequest = async (datoComun, datoCodigo) =>

@@ -7,6 +7,7 @@ import productosRoutes from "./routes/productos.routes.js";
 import datoCodigoRoutes from "./routes/datoCodigo.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -19,6 +20,10 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
+/* // Middleware para parsear el cuerpo de las solicitudes
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); */
+
 app.use("/api", authRoutes);
 app.use("/api", taskRoutes);
 app.use("/api", invoiceRoutes);

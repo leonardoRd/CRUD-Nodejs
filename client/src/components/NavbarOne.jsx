@@ -11,6 +11,7 @@ function NavbarOne() {
   const [showProducts, setShowProducts] = useState(false)
   const [showTipoComp, setShowTipoComp] = useState(false)
   const [showFacturas, setShowFacturas] = useState(false)
+  const [showDatoCodigo, setShowDatoCodigo] = useState(false)
 
   const setOptionFacturas = () => {
     setShowFacturas(!showFacturas)
@@ -22,6 +23,10 @@ function NavbarOne() {
 
   const setOptionProducts = () => {
     setShowProducts(!showProducts)
+  }
+
+  const setOptionConfiguracion = () => {
+    setShowDatoCodigo(!showDatoCodigo)
   }
 
   return (
@@ -154,10 +159,10 @@ function NavbarOne() {
           >
             <div
               onClick={setOptionProducts}
-              className="w-full h-full inline-flex items-center justify-between"
+              className="w-full h-full flex items-center justify-between"
             >
-              <SlArrowDown className="mt-2 w-10 h-5" />
-              <button className="ml-2">Productos</button>
+              <SlArrowDown className="w-5 h-5" />
+              <button className="ml-2 w-auto h-auto">Productos</button>
             </div>
 
             {/* Menu desplegable de Productos */}
@@ -185,8 +190,46 @@ function NavbarOne() {
             )}
           </li>
 
+          {/* AGREGAR CONFIGURACIONES */}
+          <li
+            className={`relative block md:inline-block rounded-md bg-zinc-600 px-3 py-2 w-full h-full text-center hover:bg-zinc-500`}
+          >
+            <div
+              onClick={setOptionConfiguracion}
+              className="w-full h-full inline-flex items-center justify-center cursor-pointer"
+            >
+              <SlArrowDown className="w-5 h-5 mt-2 mr-2 p-0" />
+              <button className="ml-2">Configuración</button>
+            </div>
+
+            {/* Menu desplegable de Configuración */}
+            {showDatoCodigo && (
+              <ul className="absolute left-0 mt-2 items-center w-48">
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-full h-auto">
+                  <Link
+                    onClick={setOptionConfiguracion}
+                    to="/datoCodigo"
+                    className="w-full h-[2rem] block"
+                  >
+                    Ver Dato Código
+                  </Link>
+                </li>
+
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-full h-auto">
+                  <Link
+                    onClick={setOptionConfiguracion}
+                    to="/add-datoCodigo"
+                    className="w-full h-[2rem] block"
+                  >
+                    Agregar Dato Código
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+
           {/* SALIR */}
-          <li className="rounded-md bg-zinc-600 px-4 py-2 w-full text-center hover:bg-zinc-500">
+          <li className="rounded-md bg-zinc-600 px-4 py-2 w-25 text-center hover:bg-zinc-500">
             <div className="flex items-center justify-between">
               <Link to="/logout" className="w-full h-[2rem] block">
                 Salir

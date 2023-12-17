@@ -57,6 +57,7 @@ export const createInvoice = async (req, res) => {
     importe,
     tasaDeCambio,
     cliente,
+    condicionPago,
   } = req.body;
 
   const newInvoice = new Invoice({
@@ -68,6 +69,7 @@ export const createInvoice = async (req, res) => {
     tasaDeCambio,
     persona: req.user.id,
     cliente,
+    condicionPago,
   });
 
   const invoiceSaved = await newInvoice.save();

@@ -26,7 +26,6 @@ function InvoicesPage() {
   }, [])
 
   const handleFiltroTipo = async (tipoComp, client) => {
-    console.log(tipoComp, client)
     try {
       await getInvoices(tipoComp, client)
     } catch (error) {
@@ -106,6 +105,9 @@ function InvoicesPage() {
               </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Cliente
+              </th>
+              <th className="text-white px-4 border-x-2 border-cyan-400">
+                Condición Pago
               </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Acciones
