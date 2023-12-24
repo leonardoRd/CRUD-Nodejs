@@ -37,6 +37,9 @@ const invoiceSchema = new mongoose.Schema(
     condicionPago: {
       type: String,
       required: true
+    },
+    instrumento: {
+      type: String
     }
   },
   {

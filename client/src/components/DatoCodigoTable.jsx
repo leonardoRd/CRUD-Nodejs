@@ -18,6 +18,7 @@ function DatoCodigoTable({ datoCodigo, onDelete }) {
           }-500`}
         ></input>
       </td>
+      <td>{datoCodigo.descripcion}</td>
       <td>
         <Link
           to={`/datoCodigo/${datoCodigo.datoComun}`}

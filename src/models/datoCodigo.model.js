@@ -19,6 +19,9 @@ const datoCodigoSchema = new mongoose.Schema(
     valorBoolean: {
       type: Boolean,
     },
+    descripcion: {
+      type: String
+    }
   },
   {
     timestamps: true,

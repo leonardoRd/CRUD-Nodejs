@@ -58,22 +58,30 @@ export const createInvoice = async (req, res) => {
     tasaDeCambio,
     cliente,
     condicionPago,
+    instrumento,
   } = req.body;
 
-  const newInvoice = new Invoice({
-    tipoComprobante,
-    descripcion,
-    estado,
-    fechaEmision: new Date(fechaEmision).toLocaleDateString(),
-    importe,
-    tasaDeCambio,
-    persona: req.user.id,
-    cliente,
-    condicionPago,
-  });
+  const fechaEmisionCasteada = new Date(fechaEmision);
 
-  const invoiceSaved = await newInvoice.save();
-  res.json(invoiceSaved);
+  try {
+    const newInvoice = new Invoice({
+      tipoComprobante,
+      descripcion,
+      estado,
+      fechaEmision: fechaEmisionCasteada,
+      importe,
+      tasaDeCambio,
+      persona: req.user.id,
+      cliente,
+      condicionPago,
+      instrumento,
+    });
+
+    const invoiceSaved = await newInvoice.save();
+    res.json(invoiceSaved);
+  } catch (error) {
+    res.status(500).json({ mesaje: "No se pudo crear la factura" });
+  }
 };
 
 export const deleteInvoice = async (req, res) => {

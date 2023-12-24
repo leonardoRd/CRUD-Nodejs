@@ -3,7 +3,7 @@ import axios from './axios'
 const API = 'http://localhost:4000/api'
 
 // Obtener todos los datos codigos
-export const getDatoCodigosRequest = async (datoComun,datoCodigo) =>
+export const getDatoCodigosRequest = async (datoComun, datoCodigo) =>
   await axios.get(
     `/datoCodigos${datoComun ? `?datoComun=${datoComun}` : ''}${
       datoCodigo ? `${datoComun ? '&' : '?'}datoCodigo=${datoCodigo}` : ''

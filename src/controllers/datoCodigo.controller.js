@@ -6,6 +6,9 @@ export const getDatoCodigos = async (req, res) => {
   let query = {};
   if (datoComun) query.datoComun = datoComun;
   if (datoCodigo) query.datoCodigo = datoCodigo;
+  /* if (descripcion) {
+    query.descripcion = { $regex: new RegExp(descripcion, 'i') };
+  } */
 
   try {
     const datoCodigos = await DatoCodigo.find(query);
@@ -32,8 +35,14 @@ export const getDatoCodigo = async (req, res) => {
 
 // crea un nuevo dato codigo
 export const createDatoCodigo = async (req, res) => {
-  const { datoComun, datoCodigo, valorTexto, valorNumerico, valorBoolean } =
-    req.body;
+  const {
+    datoComun,
+    datoCodigo,
+    valorTexto,
+    valorNumerico,
+    valorBoolean,
+    descripcion,
+  } = req.body;
 
   let bool = false;
   if (valorBoolean) bool = true;
@@ -45,6 +54,7 @@ export const createDatoCodigo = async (req, res) => {
       valorTexto,
       valorNumerico,
       valorBoolean: bool,
+      descripcion,
     });
 
     const datoCodigoSaved = await newDatoCodigo.save();
@@ -71,7 +81,6 @@ export const deleteDatoCodigo = async (req, res) => {
 // Actualiza los datos codigos por condicion
 export const uploadDatoCodigo = async (req, res) => {
   const { datoComun, datoCodigo } = req.query;
-  console.log("BODY", req.body);
 
   try {
     const datoCodigoActualizado = await DatoCodigo.updateMany(
