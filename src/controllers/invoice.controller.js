@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 
 export const getInvoices = async (req, res) => {
   try {
-    const { tipoComprobante } = req.query;
+    const { tipoComprobante, cliente } = req.query;
 
     let query = { persona: req.user.id };
 
@@ -11,8 +11,14 @@ export const getInvoices = async (req, res) => {
       // Si se proporciona el tipo de comprobante, agregarlo a la consulta
       query.tipoComprobante = tipoComprobante;
     }
-    
+
+    if (cliente) query.cliente = cliente;
+
     const invoices = await Invoice.find(query)
+      .populate({
+        path: "estado",
+        model: "Estado",
+      })
       .populate({
         path: "persona",
         model: "User",
@@ -22,11 +28,11 @@ export const getInvoices = async (req, res) => {
         path: "cliente",
         model: "User",
         match: { _id: { $exists: true } },
-      }); // Trae todos los task del user logueado
-    console.log(invoices);
+      });
+
     res.json(invoices);
   } catch (error) {
-    console.error("Error:", error.name);
+    console.log(error);
     res
       .status(500)
       .json({ error: "Error al obtener facturas con populate cliente" });
@@ -37,7 +43,6 @@ export const getInvoice = async (req, res) => {
   const invoice = await Invoice.findById(req.params.id)
     .populate("persona")
     .populate("cliente");
-  //.populate('user'); // populate para traer los datos del usuario tmb
   if (!invoice) return res.status(404).json({ message: "Invoice not found" });
 
   res.json(invoice);
@@ -52,6 +57,7 @@ export const createInvoice = async (req, res) => {
     importe,
     tasaDeCambio,
     cliente,
+    condicionPago,
   } = req.body;
 
   const newInvoice = new Invoice({
@@ -63,6 +69,7 @@ export const createInvoice = async (req, res) => {
     tasaDeCambio,
     persona: req.user.id,
     cliente,
+    condicionPago,
   });
 
   const invoiceSaved = await newInvoice.save();
@@ -84,7 +91,6 @@ export const uploadInvoice = async (req, res) => {
     });
 
     if (!invoice) return res.status(404).json({ message: "invoice not found" });
-    console.log(invoice);
     res.json(invoice);
   } catch (error) {
     return res.status(400).json(["Not found"]);

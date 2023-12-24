@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useEstados } from '../context/estadosContext'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
+import BotonGuardar from '../components/BotonGuardar'
 
 function EstadosFormPage() {
   const {
@@ -29,14 +30,14 @@ function EstadosFormPage() {
       if (params.id) {
         try {
           const res = await getEstado(params.id)
-          setValue("estadoID", res.estadoID)
-          setValue("descripcion", res.descripcion)
+          setValue('estadoID', res.estadoID)
+          setValue('descripcion', res.descripcion)
         } catch (error) {
           console.error(error)
         }
       }
     }
-    loadEstado();
+    loadEstado()
   }, [])
 
   return (
@@ -64,9 +65,10 @@ function EstadosFormPage() {
           ></textarea>
           {errors.descripcion && <p>La descripción es requerida</p>}
 
-          <button className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-zinc-500">
+          <BotonGuardar />
+          {/* <button className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500">
             Aceptar
-          </button>
+          </button> */}
         </form>
       </div>
     </div>

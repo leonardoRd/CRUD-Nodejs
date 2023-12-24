@@ -53,9 +53,9 @@ function LoginPage() {
           )}
           <button
             type="submit"
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-zinc-500"
+            className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500"
           >
-            Login
+            Iniciar Sesión
           </button>
         </form>
         <p className="flex  gap-x-2 justify-between">

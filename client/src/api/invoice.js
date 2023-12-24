@@ -2,7 +2,13 @@ import axios from './axios'
 
 const API = 'http://localhost:4000/api'
 
-export const getInvoicesRequest = (tipoComprobante) => axios.get(`/invoices${tipoComprobante ? `?tipoComprobante=${tipoComprobante}` : ''}`)
+export const getInvoicesRequest = (tipoComprobante, cliente) =>
+  axios.get(
+    `/invoices${tipoComprobante ? `?tipoComprobante=${tipoComprobante}` : ''}${
+      cliente ? `${tipoComprobante ? '&' : '?'}cliente=${cliente}` : ''
+    }`
+  );
+
 
 export const getInvoiceRequest = (id) => axios.get(`/invoice/${id}`)
 

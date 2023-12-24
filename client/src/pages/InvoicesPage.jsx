@@ -1,17 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useInvoice } from '../context/invoiceContext'
 import { useTipoComprob } from '../context/tipoComprobContext'
 import InvoiceTable from '../components/InvoiceTable'
-import { useForm } from 'react-hook-form'
-
 
 function InvoicesPage() {
-  const { getInvoices, invoice, setInvoice } = useInvoice()
+  const { getInvoices, invoice, user, getUsers } = useInvoice()
   const { getTiposComprob, tipoComprob } = useTipoComprob()
-  const { register, handleSubmit } = useForm()
+  const [tipoComprobFiltro, setTipoComprobFiltro] = useState(null)
+  const [cliente, setCliente] = useState(null)
 
   useEffect(() => {
     getInvoices()
+    getUsers()
   }, [])
 
   useEffect(() => {
@@ -25,11 +25,11 @@ function InvoicesPage() {
     loadTiposComprobantes()
   }, [])
 
-  const handleFiltroTipo = async (selectedValue) => {
+  const handleFiltroTipo = async (tipoComp, client) => {
     try {
-        getInvoices(selectedValue)
+      await getInvoices(tipoComp, client)
     } catch (error) {
-        console.error(error)
+      console.error(error)
     }
   }
 
@@ -37,14 +37,17 @@ function InvoicesPage() {
 
   return (
     <div>
-      <div>
+      {/* Filtros para la tabla */}
+      {/* Filtro de Tipos de Comprobantes*/}
+      <div className="px-2">
         <select
           onChange={(e) => {
-            console.log(e.target.value)
-            handleFiltroTipo(e.target.value)
+            const comp = e.target.value
+            setTipoComprobFiltro(comp)
+            handleFiltroTipo(comp, cliente)
           }}
           name="tipoComprobante"
-          className="w-90 bg-zinc-700 text-white px-4 py-2 rounded-md mb-4"          
+          className="w-auto bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 mr-4"
         >
           <option value="">Selecciona un Tipo de Comprobante</option>
           {tipoComprob.map((tipo) => (
@@ -53,12 +56,33 @@ function InvoicesPage() {
             </option>
           ))}
         </select>
+
+        <select
+          onChange={(e) => {
+            const cliente = e.target.value
+            setCliente(cliente)
+            handleFiltroTipo(tipoComprobFiltro, cliente)
+          }}
+          name="clienteBuscar"
+          className="w-auto bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 mr-4"
+        >
+          <option value="">Selecciona un Cliente</option>
+          {user.map((user) => (
+            <option key={user._id} value={user._id}>
+              {user.username}
+            </option>
+          ))}
+        </select>
       </div>
+
       <h1 className=" text-center font-bold text-2xl text-white pb-5">
         Facturas
       </h1>
-      <div className="flex items-center justify-center">
-        <table border="1" className="justify-center text-center max-w-full">
+      <div className="flex items-center justify-center overflow-x-auto">
+        <table
+          border="1"
+          className="min-w-full table-auto justify-center text-center max-w-full"
+        >
           <thead>
             <tr>
               <th className="text-white px-4 border-x-2 border-cyan-400">
@@ -81,6 +105,9 @@ function InvoicesPage() {
               </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Cliente
+              </th>
+              <th className="text-white px-4 border-x-2 border-cyan-400">
+                Condición Pago
               </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Acciones
