@@ -93,6 +93,7 @@ export const deleteInvoice = async (req, res) => {
 };
 
 export const uploadInvoice = async (req, res) => {
+  
   try {
     const invoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, {
       new: true,

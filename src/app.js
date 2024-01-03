@@ -5,9 +5,11 @@ import taskRoutes from "./routes/tasks.routes.js";
 import invoiceRoutes from "./routes/invoices.routes.js";
 import productosRoutes from "./routes/productos.routes.js";
 import datoCodigoRoutes from "./routes/datoCodigo.routes.js";
+import inventarioRoutes from "./routes/inventario.routes.js";
+import listaPrecioRoutes from './routes/listaPrecio.routes.js'
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 
 const app = express();
 
@@ -29,5 +31,6 @@ app.use("/api", taskRoutes);
 app.use("/api", invoiceRoutes);
 app.use("/api", productosRoutes);
 app.use("/api", datoCodigoRoutes);
-
+app.use("/api", inventarioRoutes);
+app.use("/api", listaPrecioRoutes)
 export default app;
