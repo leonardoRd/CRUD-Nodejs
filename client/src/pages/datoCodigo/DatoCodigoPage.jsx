@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   getDatoCodigosRequest,
   deleteDatoCodigoRequest,
+  getDatosCodigosPorDescRequest,
 } from '../../api/datoCodigo'
 import DatoCodigoTable from '../../components/DatoCodigoTable'
 
@@ -38,6 +39,21 @@ function DatoCodigoPage() {
     try {
       const res = await getDatoCodigosRequest(comun, codigo)
       setDatosCodigos(res.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleFiltroDescripcion = async (descrip) => {
+    try {
+      console.log(descrip)
+      if (descrip != '') {
+        const res = await getDatosCodigosPorDescRequest(descrip)
+        setDatosCodigos(res)
+      } else {
+        const res = await getDatoCodigosRequest(filtroComun, filtroCodigo)
+        setDatosCodigos(res.data)
+      }
     } catch (error) {
       console.error(error)
     }
@@ -100,15 +116,10 @@ function DatoCodigoPage() {
           <input
             type="text"
             name="findDescripcion"
-            onKeyDown={(e) => {
+            onKeyUp={(e) => {
               const dato = e.target.value
               setDescripcion(dato)
-              handleFiltroDato(filtroComun, filtroCodigo, dato)
-            }}
-            onBlur={(e) => {
-              const dato = e.target.value
-              setDescripcion(dato)
-              handleFiltroDato(filtroComun, filtroCodigo, dato)
+              handleFiltroDescripcion(descripcion)
             }}
             placeholder="Ingrese el Dato Código a buscar"
             className="w-80 bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 mr-4 ms:w-auto"
@@ -119,7 +130,7 @@ function DatoCodigoPage() {
       <h1 className="font-bold text-2xl text-white pb-5 text-center">
         Datos Códigos
       </h1>
-      <div className="overflow-x-auto flex items-center justify-center">
+      <div className="max-h-auto overflow-y-auto overflow-x-auto flex items-center justify-center">
         <table
           border="1"
           className="min-w-full justify-center text-center max-w-full"

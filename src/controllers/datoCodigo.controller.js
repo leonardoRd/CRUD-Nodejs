@@ -6,15 +6,28 @@ export const getDatoCodigos = async (req, res) => {
   let query = {};
   if (datoComun) query.datoComun = datoComun;
   if (datoCodigo) query.datoCodigo = datoCodigo;
-  /* if (descripcion) {
-    query.descripcion = { $regex: new RegExp(descripcion, 'i') };
-  } */
 
   try {
     const datoCodigos = await DatoCodigo.find(query);
     res.json(datoCodigos);
   } catch (error) {
     res.status(500).json({ mensaje: "No se encontraron datos codigos" });
+  }
+};
+
+export const getDatoCodigoDesc = async (req, res) => {
+  const { descrip } = req.query;
+
+  try {
+    const datosCodigosDesc = await DatoCodigo.find({
+      descripcion: new RegExp(descrip, "i"),
+    });
+
+    res.json(datosCodigosDesc);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ mensaje: "No se encontraron los datos solicitados" });
   }
 };
 

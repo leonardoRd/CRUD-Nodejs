@@ -10,6 +10,13 @@ export const getDatoCodigosRequest = async (datoComun, datoCodigo) =>
     }`
   )
 
+// Obtiene todos los datos codigos que contengan el string pasado por parametro en la descripcion
+export const getDatosCodigosPorDescRequest = async (descrip) => {
+  const res = await axios.get(`/datosCodigosDesc${descrip ? `?descrip=${descrip}` : ''}`)
+  console.log(res.data)
+  return res.data
+}
+
 // Obtener los datos codigos por condicion
 export const getDatoCodigoRequest = async (datoComun) =>
   await axios.get('/datoCodigo', {
@@ -20,7 +27,6 @@ export const getDatoCodigoRequest = async (datoComun) =>
 
 // Crear dato codigo
 export const createDatoCodigoRequest = async (datoCodigo) => {
-  console.log(datoCodigo)
   await axios.post(`/datoCodigo`, datoCodigo)
 }
 

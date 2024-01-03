@@ -6,6 +6,7 @@ import {
   createDatoCodigo,
   deleteDatoCodigo,
   uploadDatoCodigo,
+  getDatoCodigoDesc,
 } from "../controllers/datoCodigo.controller.js";
 
 const router = Router();
@@ -14,6 +15,8 @@ const router = Router();
 router.get("/datoCodigos", authToken, getDatoCodigos);
 
 router.get("/datoCodigo", authToken, getDatoCodigo);
+
+router.get("/datosCodigosDesc", authToken, getDatoCodigoDesc);
 
 router.post("/datoCodigo", authToken, createDatoCodigo);
 
