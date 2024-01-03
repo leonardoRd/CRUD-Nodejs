@@ -3,12 +3,19 @@ import axios from './axios'
 const API = 'http://localhost:4000/api'
 
 // Obtener todos los datos codigos
-export const getDatoCodigosRequest = async (datoComun,datoCodigo) =>
+export const getDatoCodigosRequest = async (datoComun, datoCodigo) =>
   await axios.get(
     `/datoCodigos${datoComun ? `?datoComun=${datoComun}` : ''}${
       datoCodigo ? `${datoComun ? '&' : '?'}datoCodigo=${datoCodigo}` : ''
     }`
   )
+
+// Obtiene todos los datos codigos que contengan el string pasado por parametro en la descripcion
+export const getDatosCodigosPorDescRequest = async (descrip) => {
+  const res = await axios.get(`/datosCodigosDesc${descrip ? `?descrip=${descrip}` : ''}`)
+  console.log(res.data)
+  return res.data
+}
 
 // Obtener los datos codigos por condicion
 export const getDatoCodigoRequest = async (datoComun) =>
@@ -20,7 +27,6 @@ export const getDatoCodigoRequest = async (datoComun) =>
 
 // Crear dato codigo
 export const createDatoCodigoRequest = async (datoCodigo) => {
-  console.log(datoCodigo)
   await axios.post(`/datoCodigo`, datoCodigo)
 }
 

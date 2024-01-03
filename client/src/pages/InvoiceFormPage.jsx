@@ -22,11 +22,13 @@ function InvoiceFormPage() {
   const { getEstados, estados } = useEstados()
   const [condicionPago, setCondicionPago] = useState([])
   const [contado, setContado] = useState(false)
+  const [instrumentos, setInstrumentos] = useState([])
 
   const navigate = useNavigate()
   const params = useParams()
   const [selectedUser, setSelectedUser] = useState(null)
 
+  // Modo edicion de comprobante
   useEffect(() => {
     async function loadInvoice() {
       if (params.id) {
@@ -41,6 +43,10 @@ function InvoiceFormPage() {
           setValue('tasaDeCambio', res.tasaDeCambio)
           setValue('cliente', res.cliente._id)
           setValue('condicionPago', res.condicionPago)
+          if (res.condicionPago === 'CON') {
+            setContado(true)
+            setValue('instrumento', res.instrumento)
+          }
         } catch (error) {
           console.error(error)
         }
@@ -57,12 +63,24 @@ function InvoiceFormPage() {
       console.log(error)
     }
   }
+
+  // Trae el dato codigo solicitado
+  async function loadDatoCodigo(valor) {
+    try {
+      const res = await getDatoCodigoRequest(valor)
+      setInstrumentos(res.data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   useEffect(() => {
     async function loadUsers() {
       getUsers()
     }
     loadUsers()
     loadCondicionPago('CONPAGO')
+    loadDatoCodigo('INSTFINANC')
   }, [])
 
   useEffect(() => {
@@ -77,6 +95,7 @@ function InvoiceFormPage() {
     getEstados()
   }, [])
 
+  // Funcion de carga o actualizacion del comprobante
   const onSubmit = handleSubmit(async (data) => {
     if (params.id) {
       uploadInvoice(params.id, data)
@@ -86,9 +105,12 @@ function InvoiceFormPage() {
     navigate('/invoices')
   })
 
+  // Seteo del usuario
   const handleSelectChange = (event) => {
     setSelectedUser(event.target.value)
   }
+
+  // Seteo condicion de pago, si es de contado
   const handleSelectChangeCondicion = (event) => {
     if (event === 'CON') {
       setContado(true)
@@ -243,7 +265,6 @@ function InvoiceFormPage() {
               <select
                 onClick={(e) => {
                   const valorSelect = e.target.value
-                  console.log(valorSelect)
                   handleSelectChangeCondicion(valorSelect)
                 }}
                 {...register('condicionPago', { required: true })}
@@ -262,11 +283,20 @@ function InvoiceFormPage() {
                 </p>
               )}
               {contado && (
-                <input
-                  name="instrumento"
+                <select
+                  {...register('instrumento', { required: true })}
                   className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
-                  placeholder="Instrumento de Pago"
-                />
+                >
+                  <option value="">Selecciona Instrumento Financiero</option>
+                  {instrumentos.map((instrumento) => (
+                    <option
+                      key={instrumento._id}
+                      value={instrumento.datoCodigo}
+                    >
+                      {instrumento.valorTexto}
+                    </option>
+                  ))}
+                </select>
               )}
             </div>
           </div>
@@ -288,9 +318,6 @@ function InvoiceFormPage() {
           )}
 
           <BotonGuardar />
-          {/* <button className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500">
-            Guardar
-          </button> */}
         </form>
       </div>
     </div>

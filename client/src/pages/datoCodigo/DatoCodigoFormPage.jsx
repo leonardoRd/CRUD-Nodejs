@@ -95,10 +95,9 @@ function DatoCodigoFormPage() {
 
   // Carga de los datos
   const onSubmit = handleSubmit(async (data) => {
-    console.log(filas)
     filas.forEach(async (fila) => {
       try {
-        const { datoComun } = data
+        const { datoComun, descripcion } = data
         const { datoCodigo, valorTexto, valorNumerico, valorBoolean } = fila
 
         if (fila.nuevo === 'N') {
@@ -108,6 +107,7 @@ function DatoCodigoFormPage() {
             valorTexto,
             valorNumerico,
             valorBoolean,
+            descripcion,
           })
         } else {
           const res = await createDatoCodigoRequest({
@@ -116,6 +116,7 @@ function DatoCodigoFormPage() {
             valorTexto,
             valorNumerico,
             valorBoolean,
+            descripcion,
           })
         }
       } catch (error) {
@@ -141,6 +142,24 @@ function DatoCodigoFormPage() {
 
         {/* Formulario */}
         <form onSubmit={onSubmit}>
+          <div className="grid md:grid-cols-1 sm:grid-cols-1">
+            <div className="mr-3">
+              <label className="text-white flex font-bold text-md text-left">
+                Descrición para búsqueda
+              </label>
+              <input
+                type="text"
+                placeholder="Descrición para búsqueda"
+                name="descripcion"
+                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                {...register('descripcion', { required: true })}
+              />
+              {errors.descripcion && (
+                <p className=" w-full text-red-500">Descripcion es requerida</p>
+              )}
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-1 sm:grid-cols-1">
             <div className="mr-3">
               <label className="text-white flex font-bold text-md text-left">

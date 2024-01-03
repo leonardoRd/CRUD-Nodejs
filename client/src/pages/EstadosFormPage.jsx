@@ -17,7 +17,7 @@ function EstadosFormPage() {
   const { createEstado, uploadEstado, getEstado } = useEstados()
 
   const onSubmit = handleSubmit(async (data) => {
-    if (params.id) {
+    if (params.id) {      
       uploadEstado(params.id, data)
     } else {
       createEstado(data)

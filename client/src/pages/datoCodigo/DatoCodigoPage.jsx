@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   getDatoCodigosRequest,
   deleteDatoCodigoRequest,
+  getDatosCodigosPorDescRequest,
 } from '../../api/datoCodigo'
 import DatoCodigoTable from '../../components/DatoCodigoTable'
 
@@ -9,6 +10,7 @@ function DatoCodigoPage() {
   const [datosCodigos, setDatosCodigos] = useState([])
   const [filtroCodigo, setFiltroCodigo] = useState('')
   const [filtroComun, setFiltroComun] = useState('')
+  const [descripcion, setDescripcion] = useState('')
 
   async function loadDatoCodigos() {
     try {
@@ -42,6 +44,21 @@ function DatoCodigoPage() {
     }
   }
 
+  const handleFiltroDescripcion = async (descrip) => {
+    try {
+      console.log(descrip)
+      if (descrip != '') {
+        const res = await getDatosCodigosPorDescRequest(descrip)
+        setDatosCodigos(res)
+      } else {
+        const res = await getDatoCodigosRequest(filtroComun, filtroCodigo)
+        setDatosCodigos(res.data)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   if (!datosCodigos.length === 0) return <h1>No hay Datos Codigos cargados</h1>
 
   return (
@@ -58,12 +75,12 @@ function DatoCodigoPage() {
             onKeyDown={(e) => {
               const dato = e.target.value
               setFiltroComun(dato)
-              handleFiltroDato(dato, filtroCodigo)
+              handleFiltroDato(dato, filtroCodigo, descripcion)
             }}
             onBlur={(e) => {
               const dato = e.target.value
               setFiltroComun(dato)
-              handleFiltroDato(dato, filtroCodigo)
+              handleFiltroDato(dato, filtroCodigo, descripcion)
             }}
             placeholder="Ingrese el Dato Código a buscar"
             className="w-80 bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 mr-4 ms:w-auto"
@@ -80,12 +97,29 @@ function DatoCodigoPage() {
             onKeyDown={(e) => {
               const dato = e.target.value
               setFiltroCodigo(dato)
-              handleFiltroDato(filtroComun, dato)
+              handleFiltroDato(filtroComun, dato, descripcion)
             }}
             onBlur={(e) => {
               const dato = e.target.value
               setFiltroCodigo(dato)
-              handleFiltroDato(filtroComun, dato)
+              handleFiltroDato(filtroComun, dato, descripcion)
+            }}
+            placeholder="Ingrese el Dato Código a buscar"
+            className="w-80 bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 mr-4 ms:w-auto"
+          />
+        </div>
+
+        <div>
+          <label className="text-white font-bold block mb-2">
+            Ingrese la Descrición que desea buscar
+          </label>
+          <input
+            type="text"
+            name="findDescripcion"
+            onKeyUp={(e) => {
+              const dato = e.target.value
+              setDescripcion(dato)
+              handleFiltroDescripcion(descripcion)
             }}
             placeholder="Ingrese el Dato Código a buscar"
             className="w-80 bg-zinc-700 text-white px-4 py-2 rounded-md mb-4 mr-4 ms:w-auto"
@@ -96,7 +130,7 @@ function DatoCodigoPage() {
       <h1 className="font-bold text-2xl text-white pb-5 text-center">
         Datos Códigos
       </h1>
-      <div className="overflow-x-auto flex items-center justify-center">
+      <div className="max-h-auto overflow-y-auto overflow-x-auto flex items-center justify-center">
         <table
           border="1"
           className="min-w-full justify-center text-center max-w-full"
@@ -117,6 +151,9 @@ function DatoCodigoPage() {
               </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Valor booleano
+              </th>
+              <th className="text-white px-4 border-x-2 border-cyan-400">
+                Descripción
               </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Acciones
