@@ -2,7 +2,7 @@ import Inventario from "../models/inventario/inventario.model.js";
 
 export const getInventario = async (req, res) => {
   try {
-    const inventario = await Inventario.find().populate('productoID');
+    const inventario = await Inventario.find().populate("productoID");
     res.json(inventario);
   } catch (error) {
     res.status(500).json({ mensaje: "No se encontraron datos en Inventario" });
@@ -11,8 +11,11 @@ export const getInventario = async (req, res) => {
 
 export const getInventarioById = async (req, res) => {
   const producto = req.params.id;
+  console.log(producto);
   try {
-    const productFound = await Inventario.findById(producto).populate('productoID');
+    const productFound = await Inventario.findOne({ _id: producto }).populate(
+      "productoID"
+    );
 
     if (!productFound)
       return res
@@ -24,6 +27,22 @@ export const getInventarioById = async (req, res) => {
     res
       .status(500)
       .json({ mensaje: "Error al recibir el parámetro del producto a buscar" });
+  }
+};
+
+export const getInventarioItem = async (req, res) => {
+  const item = req.params.id;
+  try {
+    const producctoEncontrado = await Inventario.find({
+      productoID: item,
+    }).populate("productoID");
+
+    if (!producctoEncontrado)
+      return res.status(500).json({ Mensaje: "No se encontró el producto" });
+
+    res.json(producctoEncontrado);
+  } catch (error) {
+    res.status(500).json({ Mensaje: "Error en el Servidor" });
   }
 };
 

@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useProducto } from '../context/productosContext'
 import BotonGuardar from '../components/BotonGuardar'
@@ -16,10 +16,12 @@ function ProductosFormPage() {
   const navigate = useNavigate()
   const params = useParams()
 
-  const { createProducto, uploadProducto, getProducto } = useProducto()
+  const { createProducto, uploadProducto, getProducto, getCantidadInventario } =
+    useProducto()
   const [unidadMedida, setUnidadMedida] = useState([])
   const [deposito, setDeposito] = useState([])
   const [tipos, setTipos] = useState([])
+  const [editable, setEditable] = useState(true)
 
   async function loadProducto() {
     if (params.id) {
@@ -30,6 +32,10 @@ function ProductosFormPage() {
       setValue('deposito', res.deposito)
       setValue('tipo', res.tipo)
       setValue('usuario', res.usuario)
+
+      const buscarCantidad = await getCantidadInventario(params.id)
+      setValue('cantidad', buscarCantidad.data[0].cantidad)
+      setEditable(false)
     }
   }
 
@@ -71,6 +77,15 @@ function ProductosFormPage() {
         <h3 className="text-white text-2xl text-center mb-3 font-bold">
           Agregar Producto
         </h3>
+
+        <div className="flex justify-start">
+          <Link
+            to="/productos"
+            className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500"
+          >
+            Productos
+          </Link>
+        </div>
 
         {/* Formulario */}
         <form onSubmit={onSubmit}>
@@ -156,15 +171,27 @@ function ProductosFormPage() {
                 ))}
               </select>
 
-              {/*  <input
-                type="text"
-                placeholder="Ingrese el Tipo"
-                name="tipo"
-                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
-                {...register('tipo', { required: true })}
-              /> */}
               {errors.tipo && (
                 <p className=" w-full text-red-500">Tipo es requerida</p>
+              )}
+            </div>
+
+            <div className="mr-3">
+              <label className="text-white flex font-bold text-md text-left">
+                Cantidad:
+              </label>
+
+              <input
+                type="number"
+                placeholder="0.00"
+                name="cantidad"
+                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                readOnly={!editable}
+                {...register('cantidad', { required: true })}
+              />
+
+              {errors.cantidad && (
+                <p className=" w-full text-red-500">Cantidad es requerida</p>
               )}
             </div>
 
@@ -185,9 +212,6 @@ function ProductosFormPage() {
             </div>
           </div>
           <BotonGuardar />
-          {/* <button className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500">
-            Guardar
-          </button> */}
         </form>
       </div>
     </div>
