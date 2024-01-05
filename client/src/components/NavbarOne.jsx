@@ -93,6 +93,16 @@ function NavbarOne() {
                     Agregar Facturas
                   </Link>
                 </li>
+
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-full h-auto">
+                  <Link
+                    onClick={setOptionFacturas}
+                    to="/listaPrecio"
+                    className="w-full h-[2rem] block"
+                  >
+                    Ver Listas de Precios
+                  </Link>
+                </li>
               </ul>
             )}
           </li>
