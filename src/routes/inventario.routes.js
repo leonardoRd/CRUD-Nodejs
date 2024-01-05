@@ -6,6 +6,7 @@ import {
   agregarItemInventario,
   updateInventario,
   deleteItemInventario,
+  getInventarioItem,
 } from "../controllers/inventario.controller.js";
 
 const router = Router();
@@ -14,6 +15,8 @@ const router = Router();
 router.get("/inventario", authToken, getInventario);
 
 router.get("/inventario/:id", authToken, getInventarioById);
+
+router.get("/inventarioItem/:id", authToken, getInventarioItem);
 
 router.post("/inventario", authToken, agregarItemInventario);
 

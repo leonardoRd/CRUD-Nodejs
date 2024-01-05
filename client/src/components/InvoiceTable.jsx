@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 function InvoiceTable({ invoice }) {
   const { deleteInvoice } = useInvoice()
   const fecha = new Date(invoice.fechaEmision).toISOString()
-  console.log("Facturas",invoice)  
   return (
     <tr className="text-center hover:bg-zinc-500 cursor-pointer overflow-x-auto">
       <td>{invoice.tipoComprobante}</td>

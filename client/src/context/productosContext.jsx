@@ -5,6 +5,7 @@ import {
   getProductosRequest,
   deleteProductoRequest,
   uploadProductoRequest,
+  getCantInventarioRequest,
 } from '../api/productos'
 
 export const ProductosContext = createContext()
@@ -22,6 +23,15 @@ export const ProductoProvider = ({ children }) => {
   const [productos, setProductos] = useState([])
 
   // Todas la funciones para obtener los datos de productos
+  const getCantidadInventario = async (id) => {
+    try {
+      const res = await getCantInventarioRequest(id)
+      return res
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   // gets post delete upload
   const getProductos = async () => {
     try {
@@ -78,6 +88,7 @@ export const ProductoProvider = ({ children }) => {
         createProducto,
         deleteProducto,
         uploadProducto,
+        getCantidadInventario,
         productos,
       }}
     >

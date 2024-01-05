@@ -1,4 +1,5 @@
 import Producto from "../models/productos.model.js";
+import Inventario from "../models/inventario/inventario.model.js";
 
 export const getProductos = async (req, res) => {
   try {
@@ -19,7 +20,8 @@ export const getProducto = async (req, res) => {
 };
 
 export const createProducto = async (req, res) => {
-  const { descripcion, unidadMedida, deposito, tipo, usuario } = req.body;
+  const { descripcion, unidadMedida, deposito, tipo, usuario, cantidad } =
+    req.body;
 
   try {
     const newProducto = new Producto({
@@ -30,6 +32,13 @@ export const createProducto = async (req, res) => {
     });
 
     const productoGuardado = await newProducto.save();
+
+    // Guardamos la cantidad en Inventario
+    const newInventario = new Inventario({
+      productoID: productoGuardado._id,
+      cantidad: cantidad,
+    });
+    const inventarioSaved = await newInventario.save();
 
     res.json(productoGuardado);
   } catch (error) {
@@ -60,9 +69,9 @@ export const uploadProducto = async (req, res) => {
       },
       { new: true }
     );
+
     res.json(productoActualizado);
   } catch (error) {
-    console.log("PRODUCTOOO", error);
     res.status(500).json({ Mensaje: "No se pudo actualizar el producto" });
   }
 };

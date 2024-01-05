@@ -11,3 +11,5 @@ export const createProductoRequest = (producto) => axios.post(`/producto`, produ
 export const uploadProductoRequest = (id, producto) => axios.put(`/producto/${id}`, producto)
 
 export const deleteProductoRequest = (id) => axios.delete(`/producto/${id}`)
+
+export const getCantInventarioRequest = (id) => axios.get(`/inventarioItem/${id}`)
