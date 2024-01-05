@@ -2,9 +2,15 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { useProducto } from '../../context/productosContext'
+import BotonGuardar from '../../components/BotonGuardar'
 
 function ListaPrecioFormPage() {
-  const { register, handleSubmit, formState: errors, setValue } = useForm()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm()
   const { getProductos, productos } = useProducto()
   const [filas, setFilas] = useState([])
 
@@ -26,20 +32,25 @@ function ListaPrecioFormPage() {
   }, [])
 
   const insertar = () => {
-    console.log(product, importe, impuesto)
+    const productoId = productos.find((p) => p.descripcion === product)
     setFilas([
       ...filas,
       {
         id: filas.length + 1,
+        idProducto: productoId._id,
         producto: product,
         importe: importe,
         impuesto: impuesto,
       },
     ])
+    setProduct('')
+    setImporte('')
+    setImpuesto('')
   }
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = (data) => {
+    console.log('acaaaaa')
     console.log(data)
-  })
+  }
 
   return (
     <div className="flex h-auto items-center justify-center">
@@ -58,8 +69,9 @@ function ListaPrecioFormPage() {
           </Link>
         </div>
 
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           {/*DATOS DE LA CABECERA DE LA LISTA DE PRECIO */}
+
           <div className="grid md:grid-cols-4 sm:grid-cols-1">
             <div className="mr-3">
               <label className="text-white flex font-bold text-md text-left">
@@ -85,7 +97,7 @@ function ListaPrecioFormPage() {
                 type="checkbox"
                 name="incluyeImpuesto"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
-                {...register('incluyeImpuesto', { required: true })}
+                {...register('incluyeImpuesto')}
               />
             </div>
 
@@ -130,12 +142,13 @@ function ListaPrecioFormPage() {
             <div className="block w-full p-2">
               <label className="text-white font-bold">Productos</label>
               <select
-                name="productos"
+                name="prod"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 onChange={(e) => {
                   const valorSeleccionado = e.target.value
                   setProduct(valorSeleccionado)
                 }}
+                value={product}
               >
                 <option value="">Seleccione un producto</option>
                 {productos.map((producto) => (
@@ -152,6 +165,7 @@ function ListaPrecioFormPage() {
                 type="number"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 placeholder="0.00"
+                value={importe}
                 onChange={(e) => {
                   const valorSeleccionado = e.target.value
                   setImporte(valorSeleccionado)
@@ -164,6 +178,7 @@ function ListaPrecioFormPage() {
                 type="number"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 placeholder="0.00"
+                value={impuesto}
                 onChange={(e) => {
                   const valorSeleccionado = e.target.value
                   setImpuesto(valorSeleccionado)
@@ -186,7 +201,7 @@ function ListaPrecioFormPage() {
           >
             <thead>
               <tr>
-              <th className="text-white px-4 border-x-2 border-cyan-400">
+                <th className="text-white px-4 border-x-2 border-cyan-400">
                   ID
                 </th>
                 <th className="text-white px-4 border-x-2 border-cyan-400">
@@ -233,6 +248,8 @@ function ListaPrecioFormPage() {
               ))}
             </tbody>
           </table>
+
+          <BotonGuardar />
         </form>
       </div>
     </div>
