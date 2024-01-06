@@ -55,7 +55,6 @@ export const ProductoProvider = ({ children }) => {
   const createProducto = async (product) => {
     try {
       const res = await createProductoRequest(product)
-      console.log(res.data)
     } catch (error) {
       console.log(error)
     }

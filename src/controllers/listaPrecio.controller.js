@@ -25,10 +25,27 @@ export const getListaPrecio = async (req, res) => {
   }
 };
 
+export const getListaPrecioItem = async (req, res) => {
+  try {
+    const listaItems = await ListaPrecioItem.find({
+      listaPrecioId: req.params.id,
+    }).populate("productoId");
+
+    if (!listaItems)
+      return res
+        .status(500)
+        .json({ Mensaje: "No existen items para esa lista de precio" });
+
+    res.json(listaItems);
+  } catch (error) {
+    res.status(500).json({ Mensaje: "Error en el Servidor" });
+  }
+};
+
 export const createListaPrecio = async (req, res) => {
   const { descripcion, fechaVigencia, fechaExpiracion } = req.body; // Datos Cabecera
   const { data } = req.body; // Datos para ListaPrecioItem
-
+  console.log(req.body);
   try {
     // Creacion de la Lista de Precio
     const newListaPrecio = new ListaPrecio({
@@ -79,28 +96,31 @@ export const updateListaPrecio = async (req, res) => {
       cabecera,
       { new: true }
     );
+    await Promise.all(
+      data.forEach(async (item) => {
+        const itemsActualizado = await ListaPrecioItem.findByIdAndUpdate(
+          item.id,
+          item,
+          { new: true }
+        );
 
-    data.forEach(async (item) => {
-      const itemsActualizado = await ListaPrecioItem.findByIdAndUpdate(
-        item.id,
-        item,
-        { new: true }
-      );
-
-      // Si no lo encuentra lo agrega como nuevo
-      if (!itemsActualizado) {
-        const newItem = new ListaPrecioItem({
-          productoId: item.productoId,
-          listaPrecioId: listaPrecioActualizada._id,
-          importe: item.importe,
-          impuesto: item.impuesto,
-        });
-        const itemSaved = await newItem.save();
-      }
-    });
+        // Si no lo encuentra lo agrega como nuevo
+          console.log("acaaaa")
+        if (!itemsActualizado) {
+          const newItem = new ListaPrecioItem({
+            productoId: item.productoId,
+            listaPrecioId: listaPrecioActualizada._id,
+            importe: item.importe,
+            impuesto: item.impuesto,
+          });
+          await newItem.save();
+        }
+      })
+    );
 
     res.json(listaPrecioActualizada);
   } catch (error) {
+    console.log("ERRORRRR", error);
     res.status(500).json({ Mensaje: "Error en el servidor" });
   }
 };

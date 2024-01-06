@@ -6,6 +6,7 @@ import {
   createListaPrecio,
   updateListaPrecio,
   deleteListaPrecio,
+  getListaPrecioItem,
 } from "../controllers/listaPrecio.controller.js";
 
 const router = Router();
@@ -20,5 +21,7 @@ router.post("/listaPrecio", authToken, createListaPrecio);
 router.delete("/listaPrecio/:id", authToken, deleteListaPrecio);
 
 router.put("/listaPrecio/:id", authToken, updateListaPrecio);
+
+router.get("/listaPrecioItem/:id", authToken, getListaPrecioItem);
 
 export default router;

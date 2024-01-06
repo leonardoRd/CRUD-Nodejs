@@ -5,6 +5,7 @@ import {
   createListaPrecioRequest,
   uploadListaPrecioRequest,
   deleteListaPrecioRequest,
+  getListaPrecioItemRequest,
 } from '../api/listaPrecio'
 
 export const ListaPrecioContext = createContext()
@@ -32,6 +33,40 @@ export const ListaPrecioProvider = ({ children }) => {
     }
   }
 
+  const getListaPrecio = async (id) => {
+    try {
+      const res = await getListaPrecioIdRequest(id)
+      return res.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const getListaPrecioItems = async (id) => {
+    try {
+      const res = await getListaPrecioItemRequest(id)
+      return res.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const createListaPrecio = async (data) => {
+    try {
+      const res = await createListaPrecioRequest(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const updateListaPrecio = async (id, data) => {
+    try {
+      const res = await uploadListaPrecioRequest(id, data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const deleteListaDePrecio = async (id) => {
     try {
       const res = await deleteListaPrecioRequest(id)
@@ -45,7 +80,15 @@ export const ListaPrecioProvider = ({ children }) => {
 
   return (
     <ListaPrecioContext.Provider
-      value={{ listaPrecio, getListasDePrecio, deleteListaDePrecio }}
+      value={{
+        listaPrecio,
+        getListasDePrecio,
+        deleteListaDePrecio,
+        createListaPrecio,
+        getListaPrecioItems,
+        getListaPrecio,
+        updateListaPrecio,
+      }}
     >
       {children}
     </ListaPrecioContext.Provider>

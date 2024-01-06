@@ -4,6 +4,9 @@ export const getListaPrecioRequest = () => axios.get(`/listaPrecio`)
 
 export const getListaPrecioIdRequest = (id) => axios.get(`/listaPrecio/${id}`)
 
+export const getListaPrecioItemRequest = (id) =>
+  axios.get(`/listaPrecioItem/${id}`)
+
 export const createListaPrecioRequest = (listaPrecio) =>
   axios.post(`/listaPrecio`, listaPrecio)
 
