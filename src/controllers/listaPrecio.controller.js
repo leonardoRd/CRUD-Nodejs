@@ -84,8 +84,8 @@ export const createListaPrecio = async (req, res) => {
 // Para actualizar pasar el id de la ListaPrecioItem, en caso de no pasarlo, lo agrega como nuevo
 export const updateListaPrecio = async (req, res) => {
   const cabecera = {};
-  const { descripcion, fechaVigencia, fechaExpiracion } = req.body;
-  const { data } = req.body;
+  const { descripcion, fechaVigencia, fechaExpiracion, data } = req.body;
+
   cabecera.descripcion = descripcion;
   cabecera.fechaVigencia = fechaVigencia;
   cabecera.fechaExpiracion = fechaExpiracion;
@@ -96,27 +96,26 @@ export const updateListaPrecio = async (req, res) => {
       cabecera,
       { new: true }
     );
-    await Promise.all(
-      data.forEach(async (item) => {
-        const itemsActualizado = await ListaPrecioItem.findByIdAndUpdate(
-          item.id,
-          item,
-          { new: true }
-        );
 
-        // Si no lo encuentra lo agrega como nuevo
-          console.log("acaaaa")
-        if (!itemsActualizado) {
-          const newItem = new ListaPrecioItem({
-            productoId: item.productoId,
-            listaPrecioId: listaPrecioActualizada._id,
-            importe: item.importe,
-            impuesto: item.impuesto,
-          });
-          await newItem.save();
-        }
-      })
-    );
+    // Utiliza un bucle for...of en lugar de forEach
+    for (const item of data) {
+      const itemsActualizado = await ListaPrecioItem.findByIdAndUpdate(
+        item.id,
+        item,
+        { new: true }
+      );
+
+      // Si no lo encuentra, lo agrega como nuevo
+      if (!itemsActualizado) {
+        const newItem = new ListaPrecioItem({
+          productoId: item.productoId,
+          listaPrecioId: listaPrecioActualizada._id,
+          importe: item.importe,
+          impuesto: item.impuesto,
+        });
+        await newItem.save();
+      }
+    }
 
     res.json(listaPrecioActualizada);
   } catch (error) {
@@ -143,5 +142,20 @@ export const deleteListaPrecio = async (req, res) => {
     res.status(200).json({ Mensaje: "Borrado correctamente" });
   } catch (error) {
     res.status(500).json({ Mensaje: "Error en el Servidor" });
+  }
+};
+
+// Borra todos las listasPrecioItem pasados por parametro
+export const deleteListaPrecioItems = async (req, res) => {
+  const { listaPrecioItemId } = req.body.ids;
+  console.log(listaPrecioItemId)
+  try {
+    for (const item of listaPrecioItemId) {
+      await ListaPrecioItem.findByIdAndDelete(item);
+    }
+
+    res.status(200).json({ Mensaje: "Borrados Exitosamente" });
+  } catch (error) {
+    res.status(500).json({ Mensaje: "Error en el servidor" });
   }
 };

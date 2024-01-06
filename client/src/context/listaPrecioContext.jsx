@@ -6,6 +6,7 @@ import {
   uploadListaPrecioRequest,
   deleteListaPrecioRequest,
   getListaPrecioItemRequest,
+  deleteListaPrecioItemsRequest,
 } from '../api/listaPrecio'
 
 export const ListaPrecioContext = createContext()
@@ -78,6 +79,15 @@ export const ListaPrecioProvider = ({ children }) => {
     }
   }
 
+  const deleteListaPrecioItems = async (data) => {
+    try {
+      console.log(data)
+      deleteListaPrecioItemsRequest(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <ListaPrecioContext.Provider
       value={{
@@ -88,6 +98,7 @@ export const ListaPrecioProvider = ({ children }) => {
         getListaPrecioItems,
         getListaPrecio,
         updateListaPrecio,
+        deleteListaPrecioItems,
       }}
     >
       {children}

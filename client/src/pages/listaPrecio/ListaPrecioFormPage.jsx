@@ -1,11 +1,12 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useProducto } from '../../context/productosContext'
 import BotonGuardar from '../../components/BotonGuardar'
 import { useListaPrecio } from '../../context/listaPrecioContext'
 import moment from 'moment'
-import { updateListaPrecio } from '../../../../src/controllers/listaPrecio.controller'
+import { confirmAlert } from 'react-confirm-alert'
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 function ListaPrecioFormPage() {
   const {
@@ -20,6 +21,7 @@ function ListaPrecioFormPage() {
     getListaPrecioItems,
     getListaPrecio,
     updateListaPrecio,
+    deleteListaPrecioItems,
   } = useListaPrecio()
   const [filas, setFilas] = useState([])
 
@@ -27,8 +29,11 @@ function ListaPrecioFormPage() {
   const [product, setProduct] = useState('')
   const [importe, setImporte] = useState(0)
   const [impuesto, setImpuesto] = useState(0)
+  const [productosAEliminar, setProductosAEliminar] = useState([])
+
   const navigate = useNavigate()
   const params = useParams()
+  const inputRef = useRef(null)
 
   // Ejecucion de funciones cuando se carga la pagina
   useEffect(() => {
@@ -107,6 +112,7 @@ function ListaPrecioFormPage() {
     setProduct('')
     setImporte('')
     setImpuesto('')
+    inputRef.current.focus()
   }
 
   const handleChange = (e, filaId, valor) => {
@@ -123,26 +129,58 @@ function ListaPrecioFormPage() {
     setFilas(arrayActualizado)
   }
 
+  const handleDelete = (filaId) => {
+    // Lo agrego al array para cuando se guarden los cambios borre los que sea necesario
+    const valorId = filas.find((fila) => fila.id === filaId)
+    if (valorId)
+      setProductosAEliminar({
+        ...productosAEliminar,
+        listaPrecioItemId: [
+          ...(productosAEliminar.listaPrecioItemId || []),
+          valorId.listaPrecioItemId,
+        ],
+      })
+
+    // Elimino de lo visual
+    setFilas(filas.filter((fila) => fila.id != filaId))
+  }
+
   // Funcion para actualizar o agregar una lista de precio
   const onSubmit = handleSubmit(async (data) => {
     let listaProductos = []
     filas.forEach((fila, i) => {
-      let nuevoProducto = {
-        id: fila.listaPrecioItemId,
-        productoId: fila.idProducto,
-        importe: fila.importe,
-        impuesto: fila.impuesto,
+      // Si es distinto de vacio el paso el id de la lista de precio, caso contratrio no se lo paso
+      // Para que en el back lo tome como un registro nuevo
+      if (fila.listaPrecioItemId != '') {
+        let actualizadoProducto = {
+          id: fila.listaPrecioItemId,
+          productoId: fila.idProducto,
+          importe: fila.importe,
+          impuesto: fila.impuesto,
+        }
+        listaProductos.push(actualizadoProducto)
+      } else {
+        let nuevoProducto = {
+          productoId: fila.idProducto,
+          importe: fila.importe,
+          impuesto: fila.impuesto,
+        }
+        listaProductos.push(nuevoProducto)
       }
-      listaProductos.push(nuevoProducto)
     })
     data.data = listaProductos
-    console.log(data)
+
     try {
       if (!params.id) {
         const res = await createListaPrecio(data)
         alert('Agregado correctamente!')
       } else {
+        // Actualizamos
         const res = await updateListaPrecio(params.id, data)
+
+        // Borramos en la DB
+        await deleteListaPrecioItems(productosAEliminar)
+
         alert('Se actualizó correctamente!')
       }
       navigate('/listaPrecio')
@@ -242,6 +280,7 @@ function ListaPrecioFormPage() {
               <label className="text-white font-bold">Productos</label>
               <select
                 name="prod"
+                ref={inputRef}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 onChange={(e) => {
                   const valorSeleccionado = e.target.value
@@ -315,6 +354,9 @@ function ListaPrecioFormPage() {
                 <th className="text-white px-4 border-x-2 border-cyan-400">
                   Impuesto
                 </th>
+                <th className="text-white px-4 border-x-2 border-cyan-400">
+                  Acción
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -346,6 +388,17 @@ function ListaPrecioFormPage() {
                       className="w-auto bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                       onChange={(e) => handleChange(e, fila.id, 'b')}
                     />
+                  </td>
+                  <td>
+                    <button
+                      className="w-auto bg-red-700 text-white rounded-lg p-2 hover:bg-red-500"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handleDelete(fila.id)
+                      }}
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}

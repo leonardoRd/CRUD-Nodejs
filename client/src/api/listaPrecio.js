@@ -15,3 +15,7 @@ export const uploadListaPrecioRequest = (id, listaPrecio) =>
 
 export const deleteListaPrecioRequest = (id) =>
   axios.delete(`/listaPrecio/${id}`)
+
+export const deleteListaPrecioItemsRequest = (data) => {
+  axios.delete(`/listaPrecioItem`, { data: { ids: data } })
+}
