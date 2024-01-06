@@ -3,9 +3,11 @@ import { useListaPrecio } from '../context/listaPrecioContext'
 
 function ListaPrecioTable({ lista }) {
   const { deleteListaDePrecio } = useListaPrecio()
-  const fechaVigencia = new Date(lista.fechavigencia).toISOString()
-  const fechaExpiracion = new Date(lista.fechaExpiracion).toISOString()
-
+  console.log(lista)
+  let fechaVigencia = new Date(lista.fechaVigencia).toISOString()
+  fechaVigencia = fechaVigencia.slice(0,10)
+  let fechaExpiracion = new Date(lista.fechaExpiracion).toISOString()
+  fechaExpiracion = fechaExpiracion.slice(0,10)
   return (
     <tr className="overflow-x-auto text-center hover:bg-zinc-500 cursor-pointer">
       <td hidden>{lista._id}</td>
