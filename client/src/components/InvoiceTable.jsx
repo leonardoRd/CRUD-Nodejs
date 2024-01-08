@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 
 function InvoiceTable({ invoice }) {
   const { deleteInvoice } = useInvoice()
-  const fecha = new Date(invoice.fechaEmision).toISOString()
+  let fecha = new Date(invoice.fechaEmision).toISOString()
+  fecha = fecha.slice(0,10)
   return (
     <tr className="text-center hover:bg-zinc-500 cursor-pointer overflow-x-auto">
       <td>{invoice.tipoComprobante}</td>
