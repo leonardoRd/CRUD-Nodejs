@@ -2,13 +2,14 @@ import { useForm } from 'react-hook-form'
 import { useInvoice } from '../context/invoiceContext'
 import { useTipoComprob } from '../context/tipoComprobContext'
 import { useEstados } from '../context/estadosContext'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import BotonGuardar from '../components/BotonGuardar'
 import { getDatoCodigoRequest } from '../api/datoCodigo'
 import { useListaPrecio } from '../context/listaPrecioContext'
 import ItemsTable from '../components/ItemsTable'
+import Swal from 'sweetalert2'
 
 function InvoiceFormPage() {
   const {
@@ -17,8 +18,16 @@ function InvoiceFormPage() {
     setValue,
     formState: { errors },
   } = useForm()
-  const { createInvoice, invoice, getInvoice, uploadInvoice, user, getUsers } =
-    useInvoice()
+
+  const {
+    createInvoice,
+    invoice,
+    getInvoice,
+    uploadInvoice,
+    user,
+    getUsers,
+    getInvoiceItem,
+  } = useInvoice()
 
   const { getTiposComprob, tipoComprob } = useTipoComprob()
   const { getEstados, estados } = useEstados()
@@ -37,11 +46,13 @@ function InvoiceFormPage() {
   const [productoSelect, setProductoSelect] = useState(null)
   const [cantidad, setCantidad] = useState('')
   const [filas, setFilas] = useState([])
+  const [soloLectura, setSoloLectura] = useState(false)
 
   // Modo edicion de comprobante
   useEffect(() => {
     async function loadInvoice() {
       if (params.id) {
+        setSoloLectura(true)
         try {
           const res = await getInvoice(params.id)
           const fechaFormateada = moment(res.fechaEmision).format('YYYY-MM-DD')
@@ -57,6 +68,27 @@ function InvoiceFormPage() {
             setContado(true)
             setValue('instrumento', res.instrumento)
           }
+          setValue('listaPrecio', res.listaPrecio)
+
+          // Buscar el detalle de la factura
+          const detalle = await getInvoiceItem(params.id)
+
+          let i = 0
+          let listaDeItems = []
+          for (const elem of detalle) {
+            const nuevaFila = {
+              id: i,
+              idProducto: elem._id,
+              descripcion: elem.productoId.descripcion,
+              cantidad: elem.cantidad,
+              precioUnitario: elem.importe,
+              importe: elem.importe,
+            }
+            listaDeItems.push(nuevaFila)
+            i++
+          }
+
+          setFilas(listaDeItems)
         } catch (error) {
           console.error(error)
         }
@@ -125,9 +157,23 @@ function InvoiceFormPage() {
     if (params.id) {
       uploadInvoice(params.id, data)
     } else {
+      let detalleitems = []
+
+      for (const item of filas) {
+        const itemInsertar = {
+          productoId: item.productoID,
+          cantidad: item.cantidad,
+          precioUnitario: item.precioUnitario,
+          importe: item.importe,
+        }
+        detalleitems.push(itemInsertar)
+      }
+      data.data = detalleitems
+
       createInvoice(data)
     }
-    navigate('/invoices')
+    mostrarMensajeExito()
+    //navigate('/invoices')
   })
 
   // Seteo del usuario
@@ -166,6 +212,7 @@ function InvoiceFormPage() {
       cantidad: cantidad,
       precioUnitario: productoId.importe,
       importe: importe,
+      productoID: productoId.productoId._id,
     }
 
     // Actualiza el estado utilizando una función para asegurar que estás trabajando con el estado más reciente
@@ -183,7 +230,7 @@ function InvoiceFormPage() {
       sumatoriaTotal += item.importe
     }
     // Actualiza cualquier otra lógica que dependa de la sumatoria aquí
-    setValue('importe',sumatoriaTotal)
+    setValue('importe', sumatoriaTotal)
   }, [filas]) // Se ejecutará cada vez que filas se actualice
 
   const handleDelete = (filaId) => {
@@ -194,6 +241,20 @@ function InvoiceFormPage() {
     setProductoSelect(valor)
   }
 
+  // Modales y mensajes de confirmacion
+  // Función para mostrar un mensaje de éxito
+  const mostrarMensajeExito = () => {
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: 'La operación se completó con éxito.',
+    }).then((result) => {
+      if (result.isConfirmed){
+        navigate('/invoices')
+      }  
+    })
+  }
+
   return (
     <div className="flex h-auto items-center justify-center">
       {/*h-[calc(80vh-30px)]*/}
@@ -201,6 +262,15 @@ function InvoiceFormPage() {
         <h3 className="text-white text-2xl text-center mb-2 font-bold">
           Agregar Factura
         </h3>
+
+        <div className="flex justify-end">
+          <Link
+            to="/invoices"
+            className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500"
+          >
+            Ver Facturas
+          </Link>
+        </div>
 
         <form onSubmit={onSubmit}>
           <div className="grid md:grid-cols-3 sm:grid-cols-1">
@@ -214,6 +284,7 @@ function InvoiceFormPage() {
                 name="tipoComprobante"
                 {...register('tipoComprobante', { required: true })}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                disabled={soloLectura}
               >
                 <option value="">Selecciona un Tipo de Comprobante</option>
                 {tipoComprob.map((tipo) => (
@@ -240,6 +311,7 @@ function InvoiceFormPage() {
                 name="estado"
                 {...register('estado', { required: true })}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                disabled={soloLectura}
               >
                 <option value="">Selecciona un Estado</option>
                 {estados.map((estado) => (
@@ -265,31 +337,12 @@ function InvoiceFormPage() {
                 placeholder="Fecha Emisión"
                 name="fechaEmision"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                readOnly={soloLectura}
                 {...register('fechaEmision', { required: true })}
               />
 
               {errors.fechaEmision && (
                 <p className=" w-full text-red-500"> Fecha is required</p>
-              )}
-            </div>
-
-            {/** IMPORTE */}
-            <div className="mr-3">
-              <label className="text-white  flex font-bold text-md text-left">
-                Importe:
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="$0.00"
-                name="importe"
-                className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
-                {...register('importe', { required: true })}
-              />
-
-              {errors.importe && (
-                <p className=" w-full text-red-500"> Importe is required</p>
               )}
             </div>
 
@@ -304,6 +357,7 @@ function InvoiceFormPage() {
                 placeholder="Tasa de Cambio"
                 name="tasaDeCambio"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                readOnly={soloLectura}
                 {...register('tasaDeCambio', { required: true })}
               />
 
@@ -326,6 +380,7 @@ function InvoiceFormPage() {
                 onChange={handleSelectChange}
                 {...register('cliente', { required: true })}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                disabled={soloLectura}
               >
                 <option value="">Selecciona una cliente</option>
                 {user.map((user) => (
@@ -352,6 +407,7 @@ function InvoiceFormPage() {
                 }}
                 {...register('condicionPago', { required: true })}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                disabled={soloLectura}
               >
                 <option value="">Selecciona Condición de Pago</option>
                 {condicionPago.map((condicion) => (
@@ -369,6 +425,7 @@ function InvoiceFormPage() {
                 <select
                   {...register('instrumento', { required: true })}
                   className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                  disabled={soloLectura}
                 >
                   <option value="">Selecciona Instrumento Financiero</option>
                   {instrumentos.map((instrumento) => (
@@ -392,6 +449,7 @@ function InvoiceFormPage() {
                 name="listaPrecio"
                 {...register('listaPrecio', { required: true })}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                disabled={soloLectura}
                 onChange={(e) => {
                   e.preventDefault()
                   cargarItems(e.target.value)
@@ -407,6 +465,27 @@ function InvoiceFormPage() {
             </div>
           </div>
 
+          {/** IMPORTE */}
+          <div className="mr-3">
+            <label className="text-white text-2xl font-bold text-md text-left mr-1">
+              Importe total: $
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="$0.00"
+              name="importe"
+              readOnly={true}
+              className="w-auto max-w-[200px] text-2xl font-bold bg-zinc-800 text-white px-4 py-2 rounded-md mb-3 mr-2 focus:outline-none"
+              {...register('importe', { required: true })}
+            />
+
+            {errors.importe && (
+              <p className=" w-full text-red-500"> Importe is required</p>
+            )}
+          </div>
+
           {/** FUNCIONALIDAD PARA AGREGAR ITEMS A LA TABLA */}
           <div className="flex w-full">
             {/* PRODUCTOS DE LA LISTA DE PRECIO SELECCIONADA*/}
@@ -418,6 +497,7 @@ function InvoiceFormPage() {
                 name="productos"
                 {...register('productos', { required: true })}
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                disabled={soloLectura}
                 onChange={(e) => {
                   e.preventDefault()
                   const valor = e.target.value
@@ -439,6 +519,7 @@ function InvoiceFormPage() {
               <input
                 type="number"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
+                readOnly={soloLectura}
                 placeholder="0.00"
                 value={cantidad}
                 onChange={(e) => {
@@ -451,6 +532,7 @@ function InvoiceFormPage() {
             <div className="block w-auto py-8">
               <button
                 className="bg-lime-700 rounded-md p-2 hover:bg-lime-500"
+                disabled={soloLectura}
                 onClick={(e) => {
                   e.preventDefault()
                   insertar()
@@ -461,7 +543,11 @@ function InvoiceFormPage() {
             </div>
           </div>
 
-          <ItemsTable filas={filas} handleDelete={handleDelete} />
+          <ItemsTable
+            filas={filas}
+            handleDelete={handleDelete}
+            soloLectura={soloLectura}
+          />
 
           <label className="text-white  flex font-bold text-md text-left">
             {' '}

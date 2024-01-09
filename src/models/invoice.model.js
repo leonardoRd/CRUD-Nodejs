@@ -36,11 +36,14 @@ const invoiceSchema = new mongoose.Schema(
     },
     condicionPago: {
       type: String,
-      required: true
+      required: true,
     },
     instrumento: {
-      type: String
-    }
+      type: String,
+    },
+    listaPrecio: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
   },
   {
     timestamps: true,

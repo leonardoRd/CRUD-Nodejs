@@ -11,7 +11,7 @@ export const getInventario = async (req, res) => {
 
 export const getInventarioById = async (req, res) => {
   const producto = req.params.id;
-  console.log(producto);
+
   try {
     const productFound = await Inventario.findOne({ _id: producto }).populate(
       "productoID"

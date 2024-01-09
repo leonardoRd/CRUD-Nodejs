@@ -1,5 +1,5 @@
 function ItemsTable(props) {
-  const { filas, handleDelete } = props
+  const { filas, handleDelete, soloLectura } = props
   
   return (
     <table
@@ -35,6 +35,7 @@ function ItemsTable(props) {
             <td>
               <button
                 className="w-auto bg-red-700 text-white rounded-lg p-2 hover:bg-red-500"
+                disabled={soloLectura}
                 onClick={(e) => {
                   e.preventDefault()
                   handleDelete(fila.id)
