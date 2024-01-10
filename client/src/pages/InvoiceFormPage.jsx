@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { useInvoice } from '../context/invoiceContext'
 import { useTipoComprob } from '../context/tipoComprobContext'
 import { useEstados } from '../context/estadosContext'
+import { useInventario } from '../context/inventarioContext'
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
@@ -33,6 +34,8 @@ function InvoiceFormPage() {
   const { getEstados, estados } = useEstados()
   const { getListasDePrecio, listaPrecio, getListaPrecioItems } =
     useListaPrecio()
+
+  const { verificarExistenciaItem } = useInventario()
   const [condicionPago, setCondicionPago] = useState([])
   const [contado, setContado] = useState(false)
   const [instrumentos, setInstrumentos] = useState([])
@@ -158,6 +161,7 @@ function InvoiceFormPage() {
       uploadInvoice(params.id, data)
     } else {
       let detalleitems = []
+      let cantidadDisponible = true
 
       for (const item of filas) {
         const itemInsertar = {
@@ -167,12 +171,29 @@ function InvoiceFormPage() {
           importe: item.importe,
         }
         detalleitems.push(itemInsertar)
+
+        // Verificar la cantidad disponible
+        const itemVerificar = {
+          item: item.productoID,
+          cantidad: item.cantidad,
+        }
+
+        // Devuelve true si la cantidad a utilizar es menor a la cantidad del inventario, caso contrario false
+        cantidadDisponible = await verificarExistenciaItem(itemVerificar)
+        console.log(cantidadDisponible)
+        if (!cantidadDisponible.data) break
       }
       data.data = detalleitems
 
-      createInvoice(data)
+      console.log(cantidadDisponible.data)
+      if (cantidadDisponible.data) {
+        createInvoice(data)
+        mostrarMensajeExito()
+      } else {
+        mostrarMensajeError()
+      }
     }
-    mostrarMensajeExito()
+
     //navigate('/invoices')
   })
 
@@ -249,9 +270,17 @@ function InvoiceFormPage() {
       title: '¡Éxito!',
       text: 'La operación se completó con éxito.',
     }).then((result) => {
-      if (result.isConfirmed){
+      if (result.isConfirmed) {
         navigate('/invoices')
-      }  
+      }
+    })
+  }
+
+  const mostrarMensajeError = () => {
+    Swal.fire({
+      icon: 'error',
+      title: '¡Error!',
+      text: 'Cantidad insuficiente para items.',
     })
   }
 

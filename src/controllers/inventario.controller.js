@@ -96,3 +96,27 @@ export const deleteItemInventario = async (req, res) => {
     res.status(500).json({ mensaje: "Error al recibir los parámetros" });
   }
 };
+
+export const verificarInventario = async (req, res) => {
+  const { item, cantidad } = req.body;
+  const result = {
+    data: true,
+  };
+
+  try {
+    const itemFind = await Inventario.find({ productoID: item });
+    console.log("ITEM A BUSCAR", itemFind);
+    if (itemFind.length > 0) {
+      console.log("ITEM A BUSCAR", itemFind[0]);
+      if (cantidad > itemFind[0].cantidad) {
+        result.data = false;
+      }
+    } else {
+      res.status(500).json({ Mensaje: "No se encontró el item" });
+    }
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ Mensaje: "Error en el servidor" });
+  }
+};
