@@ -89,7 +89,7 @@ export const deletePersona = async (req, res) => {
     if (!personaBorrada)
       return res.json({ Mensaje: "Error no se encontró la persona" });
 
-    res.json(personaBorrada);
+    res.status(200);
   } catch (error) {
     console.error("Error al borrar persona", error);
     res.status(500).json({ Mensaje: "Server Error", Detalle: error.message });

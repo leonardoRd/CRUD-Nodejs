@@ -30,6 +30,8 @@ import InventarioPage from './pages/inventario/InventarioPage'
 import InventarioFormPage from './pages/inventario/InventarioFormPage'
 import ListaPrecioPage from './pages/listaPrecio/ListaPrecioPage'
 import ListaPrecioFormPage from './pages/listaPrecio/ListaPrecioFormPage'
+import PersonaPage from './pages/personas/PersonaPage'
+import PersonaFormPage from './pages/personas/PersonaFormPage'
 import Footer from './components/Footer'
 
 function App() {
@@ -152,6 +154,17 @@ function App() {
                             <Route
                               path="/listaPrecio/:id"
                               element={<ListaPrecioFormPage />}
+                            />
+
+                            {/* CARGA DE PERSONAS */}
+                            <Route path="/personas" element={<PersonaPage />} />
+                            <Route
+                              path="/add-persona"
+                              element={<PersonaFormPage />}
+                            />
+                            <Route
+                              path="/personas/:id"
+                              element={<PersonaFormPage />}
                             />
                           </Route>
                         </Routes>
