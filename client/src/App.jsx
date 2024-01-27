@@ -30,6 +30,7 @@ import InventarioPage from './pages/inventario/InventarioPage'
 import InventarioFormPage from './pages/inventario/InventarioFormPage'
 import ListaPrecioPage from './pages/listaPrecio/ListaPrecioPage'
 import ListaPrecioFormPage from './pages/listaPrecio/ListaPrecioFormPage'
+import Footer from './components/Footer'
 
 function App() {
   return (
@@ -154,6 +155,7 @@ function App() {
                             />
                           </Route>
                         </Routes>
+                        <Footer />
                       </main>
                     </BrowserRouter>
                   </ListaPrecioProvider>

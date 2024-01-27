@@ -3,6 +3,7 @@ import { useInvoice } from '../context/invoiceContext'
 import { useTipoComprob } from '../context/tipoComprobContext'
 import InvoiceTable from '../components/InvoiceTable'
 import { Link } from 'react-router-dom'
+import Footer from '../components/Footer'
 
 function InvoicesPage() {
   const { getInvoices, invoice, user, getUsers } = useInvoice()
@@ -131,6 +132,7 @@ function InvoicesPage() {
           </tbody>
         </table>
       </div>
+      {/* <Footer /> */}
     </div>
   )
 }
