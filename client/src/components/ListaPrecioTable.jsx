@@ -3,7 +3,6 @@ import { useListaPrecio } from '../context/listaPrecioContext'
 
 function ListaPrecioTable({ lista }) {
   const { deleteListaDePrecio } = useListaPrecio()
-  console.log(lista)
   let fechaVigencia = new Date(lista.fechaVigencia).toISOString()
   fechaVigencia = fechaVigencia.slice(0,10)
   let fechaExpiracion = new Date(lista.fechaExpiracion).toISOString()

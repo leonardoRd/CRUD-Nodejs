@@ -8,6 +8,7 @@ import {
   uploadInvoice,
   getUsers,
   getUser,
+  getInvoiceItem,
 } from "../controllers/invoice.controller.js";
 import {
   getTiposComprobantes,
@@ -31,6 +32,8 @@ const router = Router();
 router.get("/invoices", authToken, getInvoices);
 
 router.get("/invoice/:id", authToken, getInvoice);
+
+router.get("/invoiceItem/:id", authToken, getInvoiceItem);
 
 router.post("/invoice", authToken, createInvoice);
 

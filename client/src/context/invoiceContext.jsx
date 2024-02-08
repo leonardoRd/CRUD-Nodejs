@@ -6,7 +6,9 @@ import {
   getInvoiceRequest,
   updateInvoiceRequest,
   getUsersRequest,
+  getInvoiceItemRequest,
 } from '../api/invoice'
+import Swal from 'sweetalert2'
 
 export const InvoiceContext = createContext()
 
@@ -22,6 +24,35 @@ export const useInvoice = () => {
 export const InvoiceProvider = ({ children }) => {
   const [invoice, setInvoice] = useState([])
   const [user, setUser] = useState([])
+
+  // Función para mostrar un modal de confirmación
+  const mostrarModalConfirmacion = async (id) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, estoy seguro',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Aquí puedes realizar la acción después de la confirmación
+        borrarInvoice(id)
+        Swal.fire('¡Eliminado!', 'El elemento ha sido eliminado.', 'success')
+      }
+    })
+  }
+
+  const borrarInvoice = async (id) => {
+    try {
+      const res = await deleteInvoiceRequest(id)
+      if (res.status === 200)
+        setInvoice(invoice.filter((invoice) => invoice._id != id))
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   // Aca van todas las funciones
   const getUsers = async () => {
@@ -42,6 +73,16 @@ export const InvoiceProvider = ({ children }) => {
     }
   }
 
+  // Obtiene el detalle de la factura pasada por parametro
+  const getInvoiceItem = async (id) => {
+    try {
+      const res = await getInvoiceItemRequest(id)
+      return res.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const createInvoice = async (invoice) => {
     try {
       const res = await createInvoiceRequest(invoice)
@@ -51,13 +92,7 @@ export const InvoiceProvider = ({ children }) => {
   }
 
   const deleteInvoice = async (id) => {
-    try {
-      const res = await deleteInvoiceRequest(id)
-      if (res.status === 200)
-        setInvoice(invoice.filter((invoice) => invoice._id != id))
-    } catch (error) {
-      console.error(error)
-    }
+    mostrarModalConfirmacion(id)
   }
 
   const getInvoice = async (id) => {
@@ -86,6 +121,7 @@ export const InvoiceProvider = ({ children }) => {
         deleteInvoice,
         getInvoices,
         uploadInvoice,
+        getInvoiceItem,
         user,
         getUsers,
         setUser,

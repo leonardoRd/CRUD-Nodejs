@@ -6,6 +6,8 @@ export const getInventarioIdRequest = (id) => axios.get(`/inventario/${id}`)
 
 export const createInventarioRequest = (producto) => axios.post(`/inventario`, producto)
 
+export const verificarExistenciaRequest = (item) => axios.post(`/verificarInventario`, item)
+
 export const uploadInventarioRequest = (id, producto) => axios.put(`/inventario/${id}`, producto)
 
 export const deleteInventarioRequest = (id) => axios.delete(`/inventario/${id}`)

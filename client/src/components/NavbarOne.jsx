@@ -30,7 +30,7 @@ function NavbarOne() {
   }
 
   return (
-    <nav className="bg-zinc-700 my-3 flex flex-col md:flex-row md:justify-between py-4 px-4 items-center md:px-10 rounded-lg">
+    <nav className="bg-zinc-700 my-3 flex flex-col md:flex-row md:justify-between py-4 px-4 items-center md:px-10 rounded-lg text-xs ">
       <Link className="w-auto h-auto" to={isAuthenticate ? '/tasks' : '/'}>
         <h1 className="text-white text-2xl font-bold rounded-md mb-2 md:mb-0">
           Tasks Manager
@@ -47,7 +47,7 @@ function NavbarOne() {
           </div>
 
           {/* Agregar Tareas */}
-          <li className="rounded-md bg-zinc-600 px-4 py-2 w-full h-full text-center hover:bg-zinc-500">
+          <li className="rounded-md  px-4 py-2 w-full h-full text-center hover:bg-zinc-500">
             <div className="inline-flex items-center justify-between">
               <IoAddCircleSharp className="w-10 h-10" />
               <Link
@@ -61,36 +61,26 @@ function NavbarOne() {
 
           {/* Agregar Facturas */}
           <li
-            className={`relative block md:inline-block rounded-md bg-zinc-600 px-3 py-2 w-full h-full text-center hover:bg-zinc-500`}
+            className={`relative block md:inline-block rounded-md px-3 py-2 w-full h-full text-center hover:bg-zinc-500`}
           >
             <div
               onClick={setOptionFacturas}
               className="w-full h-full inline-flex items-center justify-center cursor-pointer"
             >
-              <SlArrowDown className="w-5 h-5 mt-2 mr-2 p-0" />
+              <SlArrowDown className="w-5 h-5 " />
               <button className="ml-2">Facturas</button>
             </div>
 
             {/* Menu desplegable de Facturas */}
             {showFacturas && (
               <ul className="absolute left-0 mt-2 items-center w-48">
-                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-full h-auto">
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-auto h-auto">
                   <Link
                     onClick={setOptionFacturas}
                     to="/invoices"
                     className="w-full h-[2rem] block"
                   >
                     Ver Facturas
-                  </Link>
-                </li>
-
-                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-full h-auto">
-                  <Link
-                    onClick={setOptionFacturas}
-                    to="/add-invoice"
-                    className="w-full h-[2rem] block"
-                  >
-                    Agregar Facturas
                   </Link>
                 </li>
 
@@ -109,14 +99,14 @@ function NavbarOne() {
 
           {/* Agregar Tipos de Comprobantes */}
           <li
-            className={`relative block md:inline-block rounded-md text-center w-full h-auto bg-zinc-600 px-3 py-2 hover:bg-zinc-500
+            className={`relative block md:inline-block rounded-md text-center w-full h-auto  px-3 py-2 hover:bg-zinc-500
             }`}
           >
             <div
               onClick={setOptionTipoCompr}
-              className="w-full h-full inline-flex justify-between justify-items-center"
+              className="w-full h-full inline-flex justify-between justify-items-center items-center"
             >
-              <SlArrowDown className="w-10 h-5" />
+              <SlArrowDown className="w-5 h-5" />
               <button>Tipos de Comprobantes</button>
             </div>
 
@@ -165,20 +155,20 @@ function NavbarOne() {
 
           {/* INVENTARIO */}
           <li
-            className={`relative block md:inline-block rounded-md bg-zinc-600 px-3 py-2 w-full h-full text-center hover:bg-zinc-500`}
+            className={`relative block md:inline-block rounded-md  px-3 py-2 w-auto h-full text-center hover:bg-zinc-500`}
           >
             <div
               onClick={setOptionProducts}
               className="w-full h-full flex items-center justify-between"
             >
-              <SlArrowDown className="w-5 h-5" />
+              <SlArrowDown className="w-4 h-4" />
               <button className="ml-2 w-auto h-auto">Inventario</button>
             </div>
 
             {/* Menu desplegable de Inventario */}
             {showProducts && (
-              <ul className="absolute left-0 mt-2">
-                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-auto h-auto">
+              <ul className="absolute left-0 mt-2 w-40 rounded-md">
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-auto h-auto rounded-md">
                   <Link
                     onClick={setOptionProducts}
                     to="/inventario"
@@ -187,7 +177,7 @@ function NavbarOne() {
                     Ver Inventario
                   </Link>
                 </li>
-                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-auto h-auto">
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-auto h-auto rounded-md">
                   <Link
                     onClick={setOptionProducts}
                     to="/productos"
@@ -202,13 +192,13 @@ function NavbarOne() {
 
           {/* AGREGAR CONFIGURACIONES */}
           <li
-            className={`relative block md:inline-block rounded-md bg-zinc-600 px-3 py-2 w-full h-full text-center hover:bg-zinc-500`}
+            className={`relative block md:inline-block rounded-md  px-3 py-2 w-full h-full text-center hover:bg-zinc-500`}
           >
             <div
               onClick={setOptionConfiguracion}
               className="w-full h-full inline-flex items-center justify-center cursor-pointer"
             >
-              <SlArrowDown className="w-5 h-5 mt-2 mr-2 p-0" />
+              <SlArrowDown className="w-5 h-5" />
               <button className="ml-2">Configuración</button>
             </div>
 
@@ -234,17 +224,30 @@ function NavbarOne() {
                     Agregar Dato Código
                   </Link>
                 </li>
+
+                <li className="block px-4 bg-zinc-600 py-2 hover:bg-zinc-500 w-full h-auto">
+                  <Link
+                    onClick={setOptionConfiguracion}
+                    to="/personas"
+                    className="w-full h-[2rem] block"
+                  >
+                    Ver Personas
+                  </Link>
+                </li>
               </ul>
             )}
           </li>
 
           {/* SALIR */}
-          <li className="rounded-md bg-zinc-600 px-4 py-2 w-25 text-center hover:bg-zinc-500">
-            <div className="flex items-center justify-between">
-              <Link to="/logout" className="w-full h-[2rem] block">
+          <li className="flex items-center justify-between rounded-md px-4 py-2 w-auto text-center hover:bg-zinc-500">
+            <div className="flex items-center">
+              <Link
+                to="/logout"
+                className="text-justify h-[2rem] flex items-center"
+              >
                 Salir
               </Link>
-              <IoMdExit className="w-10 h-10" />
+              <IoMdExit className="w-5 h-5 ml-2" />
             </div>
           </li>
         </ul>

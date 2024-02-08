@@ -4,6 +4,7 @@ import {
   getInventarioRequest,
   uploadInventarioRequest,
   getInventarioIdRequest,
+  verificarExistenciaRequest,
 } from '../api/inventario'
 
 export const InventarioContext = createContext()
@@ -60,6 +61,17 @@ export const InventarioProvider = ({ children }) => {
     }
   }
 
+  const verificarExistenciaItem = async (data) => {
+    try {
+      console.log(data)
+      const res = await verificarExistenciaRequest(data)
+      console.log(res)
+      return res.data
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <InventarioContext.Provider
       value={{
@@ -68,6 +80,7 @@ export const InventarioProvider = ({ children }) => {
         deleteInventario,
         getInventario,
         updateInventario,
+        verificarExistenciaItem,
       }}
     >
       {children}

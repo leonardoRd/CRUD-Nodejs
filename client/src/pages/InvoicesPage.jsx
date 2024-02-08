@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useInvoice } from '../context/invoiceContext'
 import { useTipoComprob } from '../context/tipoComprobContext'
 import InvoiceTable from '../components/InvoiceTable'
+import { Link } from 'react-router-dom'
+import Footer from '../components/Footer'
 
 function InvoicesPage() {
   const { getInvoices, invoice, user, getUsers } = useInvoice()
@@ -78,6 +80,15 @@ function InvoicesPage() {
       <h1 className=" text-center font-bold text-2xl text-white pb-5">
         Facturas
       </h1>
+
+      <div className="flex justify-end">
+        <Link
+          to="/add-invoice"
+          className="w-auto bg-blue-700 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-500"
+        >
+          Agregar Factura
+        </Link>
+      </div>
       <div className="flex items-center justify-center overflow-x-auto">
         <table
           border="1"
@@ -121,6 +132,7 @@ function InvoicesPage() {
           </tbody>
         </table>
       </div>
+      {/* <Footer /> */}
     </div>
   )
 }

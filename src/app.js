@@ -6,7 +6,8 @@ import invoiceRoutes from "./routes/invoices.routes.js";
 import productosRoutes from "./routes/productos.routes.js";
 import datoCodigoRoutes from "./routes/datoCodigo.routes.js";
 import inventarioRoutes from "./routes/inventario.routes.js";
-import listaPrecioRoutes from './routes/listaPrecio.routes.js'
+import listaPrecioRoutes from "./routes/listaPrecio.routes.js";
+import personas from "./routes/persona.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -32,5 +33,6 @@ app.use("/api", invoiceRoutes);
 app.use("/api", productosRoutes);
 app.use("/api", datoCodigoRoutes);
 app.use("/api", inventarioRoutes);
-app.use("/api", listaPrecioRoutes)
+app.use("/api", listaPrecioRoutes);
+app.use("/api", personas);
 export default app;

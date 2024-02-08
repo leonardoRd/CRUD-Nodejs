@@ -1,5 +1,6 @@
 import Invoice from "../models/invoice.model.js";
 import User from "../models/user.model.js";
+import InvoiceItem from "../models/invoiceItem.model.js";
 
 export const getInvoices = async (req, res) => {
   try {
@@ -48,6 +49,24 @@ export const getInvoice = async (req, res) => {
   res.json(invoice);
 };
 
+// Obtener detalle de la factura dado el ID
+export const getInvoiceItem = async (req, res) => {
+  try {
+    const invoicesItems = await InvoiceItem.find({
+      invoiceId: req.params.id,
+    }).populate("productoId");
+
+    if (!invoicesItems)
+      return res
+        .status(500)
+        .json({ Mensaje: "No se encontró detalle para al factura" });
+
+    res.json(invoicesItems);
+  } catch (error) {
+    res.status(500).json({ Mensaje: "Error en el servidor" });
+  }
+};
+
 export const createInvoice = async (req, res) => {
   const {
     tipoComprobante,
@@ -59,6 +78,8 @@ export const createInvoice = async (req, res) => {
     cliente,
     condicionPago,
     instrumento,
+    listaPrecio,
+    data,
   } = req.body;
 
   const fechaEmisionCasteada = new Date(fechaEmision);
@@ -75,9 +96,24 @@ export const createInvoice = async (req, res) => {
       cliente,
       condicionPago,
       instrumento,
+      listaPrecio,
     });
 
     const invoiceSaved = await newInvoice.save();
+
+    // Detalle de factura
+    for (const item of data) {
+      const newDetalleItem = new InvoiceItem({
+        invoiceId: invoiceSaved._id,
+        productoId: item.productoId,
+        cantidad: item.cantidad,
+        precioUnitario: item.precioUnitario,
+        importe: item.importe,
+      });
+
+      await newDetalleItem.save();
+    }
+
     res.json(invoiceSaved);
   } catch (error) {
     res.status(500).json({ mesaje: "No se pudo crear la factura" });
@@ -93,7 +129,6 @@ export const deleteInvoice = async (req, res) => {
 };
 
 export const uploadInvoice = async (req, res) => {
-  
   try {
     const invoice = await Invoice.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
