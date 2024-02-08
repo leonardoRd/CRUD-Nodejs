@@ -1,5 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import BotonGuardar from '../../components/BotonGuardar'
+import {
+  createPersonaRequest,
+  getPersonaRequest,
+  updatePersonaRequest,
+} from '../../api/persona'
+import { useEffect, useState } from 'react'
 
 function PersonaFormPage() {
   const {
@@ -8,10 +15,47 @@ function PersonaFormPage() {
     formState: { errors },
     setValue,
   } = useForm()
+  const [soloLectura, setSoloLectura] = useState(false)
+  const navigate = useNavigate()
+  const params = useParams()
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
+  useEffect(() => {
+    async function loadPersona() {
+      if (params.id) {
+        try {
+          const res = await getPersonaRequest(params.id)
+          setValue('razonSocial', res.data.razonSocial)
+          setValue('numeroDocumento', res.data.numeroDocumento)
+          setValue('codigoFiscal', res.data.codigoFiscal)
+          setValue('codigoPostal', res.data.codigoPostal)
+          setValue('ciudad', res.data.ciudad)
+          setValue('pais', res.data.pais)
+          setValue('edad', res.data.edad)
+          setValue('email', res.data.email)
+          setValue('telefono', res.data.telefono)
+          setSoloLectura(true)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+
+    loadPersona()
+  }, [])
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      if (params.id) {
+        await updatePersonaRequest(params.id, data)
+      } else {
+        await createPersonaRequest(data)
+      }
+      navigate('/personas')
+    } catch (error) {
+      console.error(error)
+    }
   })
+
   return (
     <div className="flex h-auto items-center justify-center">
       <div className="bg-zinc-800 w-full h-auto p-5 rounded-md text-center">
@@ -43,6 +87,7 @@ function PersonaFormPage() {
                 name="razonSocial"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('razonSocial', { required: true })}
+                disabled={soloLectura}
               />
               {errors.razonSocial && (
                 <p className=" w-full text-red-500">
@@ -61,6 +106,7 @@ function PersonaFormPage() {
                 name="numeroDocumento"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('numeroDocumento', { required: true })}
+                disabled={soloLectura}
               />
               {errors.numeroDocumento && (
                 <p className=" w-full text-red-500">
@@ -79,6 +125,7 @@ function PersonaFormPage() {
                 name="codigoFiscal"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('codigoFiscal', { required: true })}
+                disabled={soloLectura}
               />
               {errors.codigoFiscal && (
                 <p className=" w-full text-red-500">
@@ -97,6 +144,7 @@ function PersonaFormPage() {
                 name="email"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('email', { required: true })}
+                disabled={soloLectura}
               />
               {errors.email && (
                 <p className=" w-full text-red-500">Correo es requerido</p>
@@ -129,6 +177,7 @@ function PersonaFormPage() {
                 name="edad"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('edad', { required: true })}
+                disabled={soloLectura}
               />
               {errors.edad && (
                 <p className=" w-full text-red-500">Edad es requerido</p>
@@ -145,6 +194,7 @@ function PersonaFormPage() {
                 name="pais"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
                 {...register('pais', { required: true })}
+                disabled={soloLectura}
               />
               {errors.pais && (
                 <p className=" w-full text-red-500">Pais es requerido</p>
@@ -170,7 +220,7 @@ function PersonaFormPage() {
                 Código Postal:
               </label>
               <input
-                type="number"
+                type="text"
                 placeholder="Código Postal"
                 name="codigoPostal"
                 className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md mb-3 mr-2"
@@ -183,6 +233,7 @@ function PersonaFormPage() {
               )}
             </div>
           </div>
+          <BotonGuardar />
         </form>
       </div>
     </div>

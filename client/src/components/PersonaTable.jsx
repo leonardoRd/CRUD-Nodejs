@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 function PersonaTable(props) {
-  const { persona, deletePersona } = props
+  const { persona, mostrarModalConfirmacion } = props
   return (
     <tr className="overflow-x-auto text-center hover:bg-zinc-500 cursor-pointer">
       <td hidden>{persona._id}</td>
@@ -10,7 +10,7 @@ function PersonaTable(props) {
       <td>{persona.edad}</td>
       <td>
         <Link
-          to={`/persona/${persona._id}`}
+          to={`/personas/${persona._id}`}
           className="bg-blue-600 rounded-md px-3 py-2 mx-2 hover:bg-blue-500 md:inline-block"
         >
           Editar
@@ -18,7 +18,7 @@ function PersonaTable(props) {
         <button
           className="bg-red-600 rounded-md px-3 py-2 mx-2 hover:bg-red-500 md:inline-block"
           onClick={() => {
-            deletePersona(persona._id)
+            mostrarModalConfirmacion(persona._id)
           }}
         >
           Eliminar

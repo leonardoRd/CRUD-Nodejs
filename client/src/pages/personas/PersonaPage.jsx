@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { getPersonasRequest, deletePersonaRequest } from '../../api/persona'
 import PersonaTable from '../../components/PersonaTable'
+import Swal from 'sweetalert2'
 
 function PersonaPage() {
   const [personas, setPersonas] = useState([])
@@ -21,13 +22,39 @@ function PersonaPage() {
 
   const deletePersona = async (id) => {
     try {
+      console.log(id)
       const res = await deletePersonaRequest(id)
-      if (res.status === 200)
+      console.log(res.status)
+      if (res.status === 200) {
         setPersonas(personas.filter((persona) => persona._id != id))
+      }
     } catch (error) {
       console.log(error)
     }
   }
+
+  // Función para mostrar un modal de confirmación
+  const mostrarModalConfirmacion = (id) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, estoy seguro',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deletePersona(id).then(() => {
+          Swal.fire('¡Eliminado!', 'El elemento ha sido eliminado.', 'success');
+        }).catch((error) => {
+          console.error(error);
+          Swal.fire('Error', 'Hubo un error al eliminar el elemento.', 'error');
+        });
+      }
+    });
+  }
+  
 
   return (
     <div>
@@ -51,7 +78,9 @@ function PersonaPage() {
         >
           <thead>
             <tr>
-              <th className="text-white px-4 border-x-2 border-cyan-400"hidden>ID</th>
+              <th className="text-white px-4 border-x-2 border-cyan-400" hidden>
+                ID
+              </th>
               <th className="text-white px-4 border-x-2 border-cyan-400">
                 Razón Social
               </th>
@@ -73,7 +102,7 @@ function PersonaPage() {
             {personas.map((persona) => (
               <PersonaTable
                 persona={persona}
-                deletePersona={deletePersona}
+                mostrarModalConfirmacion={mostrarModalConfirmacion}
                 key={persona._id}
               />
             ))}
